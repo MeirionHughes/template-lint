@@ -158,7 +158,7 @@ export class Linter {
     constructor(rules?: Rule[]) {
         if (!rules)
             rules = [
-                new ParseRule(),
+                new ParserRule(),
                 new SelfCloseRule(),
             ];
         this.rules = rules;
