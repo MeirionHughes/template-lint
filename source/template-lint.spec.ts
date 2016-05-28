@@ -1,16 +1,30 @@
 /// <reference path="template-lint.ts" />
 import {
-  Linter, 
-  SelfCloseRule, 
-  TemplateRule, 
-  RouterRule,
-  RequireRule} from '../dist/template-lint';
+  Linter,
+  SelfCloseRule,
+  ParserRule} from '../dist/template-lint';
 
 describe("SelfClose Rule", () => {
 
   var linter: Linter = new Linter([
     new SelfCloseRule()
   ]);
+  
+   it("will allow self-close within svg scope", (done) => {
+    linter.lint('<template><svg><rect/></svg></template>')
+      .then((errors) => {
+        expect(errors.length).toBe(0);
+        done();
+      });
+  });
+  
+  it("will reject self-close on svg", (done) => {
+    linter.lint('<template><svg/></template>')
+      .then((errors) => {
+        expect(errors.length).toBeGreaterThan(0);
+        done();
+      });
+  });
 
   it("will reject self-closed template", (done) => {
     linter.lint('<template/>')
@@ -46,124 +60,41 @@ describe("SelfClose Rule", () => {
   });
 });
 
-
-
-
-
-describe("Template Rule", () => {
-
-  var linter: Linter = new Linter([
-    new TemplateRule()
-  ]);
-  
-  it("will accept template root element", (done) => {
-    linter.lint('<temslat></temslat>')
-      .then((errors) => {
-        expect(errors.length).toBeGreaterThan(0);
-        done();
-      });
-  });
-  
-  it("will reject non-template root element", (done) => {
-    linter.lint('<template></template>')
-      .then((errors) => {
-        expect(errors.length).toBe(0);
-        done();
-      });
-  });
-  
-  it("will reject more than one template", (done) => {
-    linter.lint('<template></template><template></template>')
-      .then((errors) => {
-        expect(errors.length).toBeGreaterThan(0);
-        done();
-      });
-  });
-  
-  it("will pass template with valid contents", (done) => {
-    linter.lint('<template><button></button><div></div></template>')
-      .then((errors) => {
-        expect(errors.length).toBe(0);
-        done();
-      });
-  });
-});
-
-
-
-describe("Router Rule", () => {
-
-  var linter: Linter = new Linter([
-    new RouterRule()
-  ]);
-  
-  
-  it("will reject router-view with tag contents", (done) => {
-    linter.lint('<template><router-view><br/></router-view></template>')
-      .then((errors) => {
-        expect(errors.length).toBeGreaterThan(0);
-        done();
-      });
-  });
-});
-
-
-describe("Require Rule", () => {
-
-  var linter: Linter = new Linter([
-    new RequireRule()
-  ]);  
-  
-   it("will pass require elements with a from attribute", (done) => {
-    linter.lint('<template><require from="something"></require></template>')
-      .then((errors) => {
-        expect(errors.length).toBe(0);
-        done();
-      });
-  });
-  
-  it("will reject require elements without a from attribute", (done) => {
-    linter.lint('<template><require fgh="something"></require></template>')
-      .then((errors) => {
-        expect(errors.length).toBeGreaterThan(0);
-        done();
-      });
-  });  
-});
-
 describe("Parser Rule", () => {
 
-  var linter: Linter = new Linter();  
-    
-  it("will error on unclosed element", (done) => {
+  var linter: Linter = new Linter([
+    new ParserRule(),
+  ]);
+
+  it("will reject unclosed element", (done) => {
     linter.lint('<template>')
       .then((errors) => {
         expect(errors.length).toBeGreaterThan(0);
         done();
       });
-  });  
-  
-   it("will error on nested unclosed element", (done) => {
+  });
+
+  it("will reject nested unclosed element", (done) => {
     linter.lint('<template><div></template>')
       .then((errors) => {
         expect(errors.length).toBeGreaterThan(0);
         done();
       });
-  }); 
-  
-   it("will error on nested misnamed closing element", (done) => {
+  });
+
+  it("will reject nested misnamed closing element", (done) => {
     linter.lint('<template><div></dvi></template>')
       .then((errors) => {
         expect(errors.length).toBeGreaterThan(0);
         done();
       });
-  });  
-  
-  it("will error on multiple nested closing element (multiple)", (done) => {
+  });
+
+  it("will reject multiple nested closing element (multiple)", (done) => {
     linter.lint('<template><div><div><div></div></div></template>')
       .then((errors) => {
         expect(errors.length).toBeGreaterThan(0);
         done();
       });
-  });  
+  });
 });

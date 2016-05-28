@@ -30,8 +30,13 @@ export class SelfCloseRule extends Rule {
         
         self.errors = [];
         parser.on('startTag', (name, attrs, selfClosing, location) => {
-            if(parseState.scope == 'svg')
+            if(parseState.scope == 'svg'){
+                if(name == 'svg' && selfClosing){
+                    let error = "self-closing element [line: " + location.line + "]";
+                    self.errors.push(error);
+                }                
                 return;
+            }
                 
             if (selfClosing) {                
                 if (voidTags.indexOf(name) < 0) {
@@ -46,7 +51,7 @@ export class SelfCloseRule extends Rule {
 /**
  * Rule to ensure tags are properly closed. 
  */
-export class ParseRule extends Rule {
+export class ParserRule extends Rule {
     private parseState:ParseState;
 
     init(parser: SAXParser, parseState:ParseState) {  

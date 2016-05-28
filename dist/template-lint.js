@@ -20,6 +20,13 @@ class SelfCloseRule extends Rule {
         var self = this;
         self.errors = [];
         parser.on('startTag', (name, attrs, selfClosing, location) => {
+            if (parseState.scope == 'svg') {
+                if (name == 'svg' && selfClosing) {
+                    let error = "self-closing element [line: " + location.line + "]";
+                    self.errors.push(error);
+                }
+                return;
+            }
             if (selfClosing) {
                 if (voidTags.indexOf(name) < 0) {
                     let error = "self-closing element [line: " + location.line + "]";
@@ -31,78 +38,9 @@ class SelfCloseRule extends Rule {
 }
 exports.SelfCloseRule = SelfCloseRule;
 /**
- *  Rule to ensure root element is the template element
+ * Rule to ensure tags are properly closed.
  */
-class TemplateRule extends Rule {
-    init(parser, parseState) {
-        var self = this;
-        self.errors = [];
-        var isRoot = true;
-        var found = 0;
-        parser.on('startTag', (name, attrs, selfClosing, location) => {
-            if (isRoot) {
-                isRoot = false;
-                if (name != 'template') {
-                    let error = "root element is not template [line: " + location.line + "]";
-                    self.errors.push(error);
-                    return;
-                }
-            }
-            if (name == 'template') {
-                if (found > 0) {
-                    let error = "another template element found [line: " + location.line + "]";
-                    self.errors.push(error);
-                }
-                found += 1;
-            }
-        });
-    }
-}
-exports.TemplateRule = TemplateRule;
-/**
- *  Rule to ensure root element is the template element
- */
-class RouterRule extends Rule {
-    init(parser, parseState) {
-        var self = this;
-        self.errors = [];
-        var capture = false;
-        var stack = [];
-        parser.on('startTag', (name, attrs, selfClosing, location) => {
-            if (capture) {
-                let error = "tags within router-view are illegal [line: " + location.line + "]";
-                self.errors.push(error);
-            }
-            if (name == 'router-view')
-                capture = true;
-        });
-        parser.on('endTag', (name, location) => {
-            if (name == 'router-view')
-                capture = false;
-        });
-    }
-}
-exports.RouterRule = RouterRule;
-/**
- *  Rule to ensure require element is well formed
- */
-class RequireRule extends Rule {
-    init(parser, parseState) {
-        var self = this;
-        self.errors = [];
-        parser.on('startTag', (name, attrs, selfClosing, location) => {
-            if (name != 'require')
-                return;
-            let result = attrs.find(x => x.name == 'from');
-            if (!result) {
-                let error = "require tag is missing from attribute [line: " + location.line + "]";
-                self.errors.push(error);
-            }
-        });
-    }
-}
-exports.RequireRule = RequireRule;
-class WellFormedRule extends Rule {
+class ParserRule extends Rule {
     init(parser, parseState) {
         this.parseState = parseState;
         this.errors = [];
@@ -111,7 +49,10 @@ class WellFormedRule extends Rule {
         this.errors = this.parseState.errors;
     }
 }
-exports.WellFormedRule = WellFormedRule;
+exports.ParserRule = ParserRule;
+/**
+ *  Node in traversal stack
+ */
 class ParseNode {
     constructor(scope, name, location) {
         this.scope = scope;
@@ -121,7 +62,7 @@ class ParseNode {
 }
 exports.ParseNode = ParseNode;
 /**
- *  Helper to maintain the current state of traversal.
+ *  Helper to maintain the current state of open tags
  */
 class ParseState {
     constructor(scopes) {
@@ -132,7 +73,6 @@ class ParseState {
     init(parser) {
         this.stack = [];
         this.errors = [];
-        this.illFormed = false;
         var self = this;
         var stack = this.stack;
         parser.on("startTag", (name, attrs, selfClosing, location) => {
@@ -142,6 +82,7 @@ class ParseState {
                     scope = stack[stack.length - 1].scope;
                 if (self.isScope(name))
                     scope = name;
+                self.scope = scope;
                 stack.push(new ParseNode(scope, name, location));
             }
         });
@@ -159,10 +100,9 @@ class ParseState {
         let stack = this.stack;
         let errors = this.errors;
         if (stack.length > 0) {
-            stack.forEach(element => {
-                let error = "suspected unclosed element detected [line: " + element.location.line + "]";
-                errors.push(error);
-            });
+            let element = stack[stack.length - 1];
+            let error = "suspected unclosed element detected [line: " + element.location.line + "]";
+            errors.push(error);
         }
     }
     isVoid(name) {
@@ -181,11 +121,8 @@ class Linter {
     constructor(rules) {
         if (!rules)
             rules = [
-                new WellFormedRule(),
+                new ParseRule(),
                 new SelfCloseRule(),
-                new TemplateRule(),
-                new RequireRule(),
-                new RouterRule(),
             ];
         this.rules = rules;
     }
@@ -195,12 +132,12 @@ class Linter {
         var stream = new stream_1.Readable();
         // must be done before initialising rules
         parseState.init(parser);
-        stream.push(html);
-        stream.push(null);
         var rules = this.rules;
         rules.forEach((rule) => {
             rule.init(parser, parseState);
         });
+        stream.push(html);
+        stream.push(null);
         var work = stream.pipe(parser);
         var completed = new Promise(function (resolve, reject) {
             work.on("end", () => {

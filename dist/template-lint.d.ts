@@ -13,46 +13,19 @@ export declare abstract class Rule {
  * Rule to ensure non-void elements do not self-close
  */
 export declare class SelfCloseRule extends Rule {
-    name: string;
-    description: string;
-    errors: string[];
     init(parser: SAXParser, parseState: ParseState): void;
 }
 /**
- *  Rule to ensure root element is the template element
+ * Rule to ensure tags are properly closed.
  */
-export declare class TemplateRule extends Rule {
-    name: string;
-    description: string;
-    errors: string[];
-    init(parser: SAXParser, parseState: ParseState): void;
-}
-/**
- *  Rule to ensure root element is the template element
- */
-export declare class RouterRule extends Rule {
-    name: string;
-    description: string;
-    errors: string[];
-    init(parser: SAXParser, parseState: ParseState): void;
-}
-/**
- *  Rule to ensure require element is well formed
- */
-export declare class RequireRule extends Rule {
-    name: string;
-    description: string;
-    errors: string[];
-    init(parser: SAXParser, parseState: ParseState): void;
-}
-export declare class WellFormedRule extends Rule {
-    name: string;
-    description: string;
-    errors: string[];
+export declare class ParserRule extends Rule {
     private parseState;
     init(parser: SAXParser, parseState: ParseState): void;
     finalise(): void;
 }
+/**
+ *  Node in traversal stack
+ */
 export declare class ParseNode {
     scope: string;
     name: string;
@@ -60,13 +33,13 @@ export declare class ParseNode {
     constructor(scope: string, name: string, location: StartTagLocationInfo);
 }
 /**
- *  Helper to maintain the current state of traversal.
+ *  Helper to maintain the current state of open tags
  */
 export declare class ParseState {
     stack: ParseNode[];
     errors: string[];
-    scopes: string[];
-    private illFormed;
+    private scopes;
+    scope: string;
     constructor(scopes?: string[]);
     init(parser: SAXParser): void;
     finalise(): void;
