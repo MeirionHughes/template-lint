@@ -97,4 +97,12 @@ describe("Parser Rule", () => {
         done();
       });
   });
+  
+  it("will accept unclosed void elements", (done) => {
+    linter.lint('<template><img></template>')
+      .then((errors) => {
+        expect(errors.length).toBe(0);
+        done();
+      });
+  });
 });
