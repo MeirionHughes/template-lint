@@ -74,18 +74,27 @@ export class ParseNode {
  *  Helper to maintain the current state of open tags  
  */
 export class ParseState {
+    private scopes: string[]; 
+    private voids: string[]; 
+    
     public stack: ParseNode[];
     public errors: string[];
-    private scopes: string[]; 
+
        
     public scope:string;
     public nextScope:string;
     
-    constructor(scopes?: string[]) {
+    constructor(scopes?: string[], voids?:string[]) {
         if (scopes == null)
             scopes = ['html', 'body', 'template', 'svg'];
+            
+        if(voids == null)
+            voids = ['area', 'base', 'br', 'col', 'embed', 'hr',
+            'img', 'input', 'keygen', 'link', 'meta',
+            'param', 'source', 'track', 'wbr'];
 
         this.scopes = scopes;
+        this.voids = voids;
     }
 
     initPreRules(parser: SAXParser) {
@@ -154,12 +163,8 @@ export class ParseState {
     }
 
     private isVoid(name: string): boolean {
-        const voidTags = [
-            'area', 'base', 'br', 'col', 'embed', 'hr',
-            'img', 'input', 'keygen', 'link', 'meta',
-            'param', 'source', 'track', 'wbr'];
-
-        return voidTags.indexOf(name) >= 0;
+        
+        return this.voids.indexOf(name) >= 0;
     }
 
     private isScope(name: string): boolean {

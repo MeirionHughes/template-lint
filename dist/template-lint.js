@@ -61,10 +61,15 @@ exports.ParseNode = ParseNode;
  *  Helper to maintain the current state of open tags
  */
 class ParseState {
-    constructor(scopes) {
+    constructor(scopes, voids) {
         if (scopes == null)
             scopes = ['html', 'body', 'template', 'svg'];
+        if (voids == null)
+            voids = ['area', 'base', 'br', 'col', 'embed', 'hr',
+                'img', 'input', 'keygen', 'link', 'meta',
+                'param', 'source', 'track', 'wbr'];
         this.scopes = scopes;
+        this.voids = voids;
     }
     initPreRules(parser) {
         this.stack = [];
@@ -115,11 +120,7 @@ class ParseState {
         }
     }
     isVoid(name) {
-        const voidTags = [
-            'area', 'base', 'br', 'col', 'embed', 'hr',
-            'img', 'input', 'keygen', 'link', 'meta',
-            'param', 'source', 'track', 'wbr'];
-        return voidTags.indexOf(name) >= 0;
+        return this.voids.indexOf(name) >= 0;
     }
     isScope(name) {
         return this.scopes.indexOf(name) >= 0;

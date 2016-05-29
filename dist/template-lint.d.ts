@@ -36,12 +36,13 @@ export declare class ParseNode {
  *  Helper to maintain the current state of open tags
  */
 export declare class ParseState {
+    private scopes;
+    private voids;
     stack: ParseNode[];
     errors: string[];
-    private scopes;
     scope: string;
     nextScope: string;
-    constructor(scopes?: string[]);
+    constructor(scopes?: string[], voids?: string[]);
     initPreRules(parser: SAXParser): void;
     initPostRules(parser: SAXParser): void;
     finalise(): void;
