@@ -35,11 +35,9 @@ export class SelfCloseRule extends Rule {
                 return;
             }
 
-            if (selfClosing) {
-                if (voidTags.indexOf(name) < 0) {
-                    let error = "self-closing element [line: " + location.line + "]";
-                    self.errors.push(error);
-                }
+            if (selfClosing && voidTags.indexOf(name) < 0) {
+                let error = "self-closing element [line: " + location.line + "]";
+                self.errors.push(error);
             }
         });
     }
@@ -145,7 +143,7 @@ export class ParseState {
         parser.on("startTag", () => {
             if (self.nextScope !== null)
                 self.scope = self.nextScope;
-           self.nextScope = null;
+            self.nextScope = null;
         });
     }
 
@@ -160,7 +158,6 @@ export class ParseState {
     }
 
     private isVoid(name: string): boolean {
-
         return this.voids.indexOf(name) >= 0;
     }
 

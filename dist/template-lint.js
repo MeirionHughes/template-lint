@@ -23,11 +23,9 @@ class SelfCloseRule extends Rule {
             if (parseState.scope == 'svg') {
                 return;
             }
-            if (selfClosing) {
-                if (voidTags.indexOf(name) < 0) {
-                    let error = "self-closing element [line: " + location.line + "]";
-                    self.errors.push(error);
-                }
+            if (selfClosing && voidTags.indexOf(name) < 0) {
+                let error = "self-closing element [line: " + location.line + "]";
+                self.errors.push(error);
             }
         });
     }
