@@ -1,9 +1,9 @@
 "use strict";
-/// <reference path="template-lint.ts" />
-const template_lint_1 = require('../dist/template-lint');
+/// <reference path="index.ts" />
+const index_1 = require('../dist/index');
 describe("SelfClose Rule", () => {
-    var linter = new template_lint_1.Linter([
-        new template_lint_1.SelfCloseRule()
+    var linter = new index_1.Linter([
+        new index_1.SelfCloseRule()
     ]);
     it("will allow self-close within svg scope", (done) => {
         linter.lint('<template><svg><rect/></svg></template>')
@@ -49,8 +49,8 @@ describe("SelfClose Rule", () => {
     });
 });
 describe("Parser Rule", () => {
-    var linter = new template_lint_1.Linter([
-        new template_lint_1.ParserRule(),
+    var linter = new index_1.Linter([
+        new index_1.ParserRule(),
     ]);
     it("will reject unclosed element", (done) => {
         linter.lint('<template>')
@@ -89,4 +89,4 @@ describe("Parser Rule", () => {
     });
 });
 
-//# sourceMappingURL=template-lint.spec.js.map
+//# sourceMappingURL=index.spec.js.map

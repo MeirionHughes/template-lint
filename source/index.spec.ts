@@ -1,8 +1,8 @@
-/// <reference path="template-lint.ts" />
+/// <reference path="index.ts" />
 import {
   Linter,
   SelfCloseRule,
-  ParserRule} from '../dist/template-lint';
+  ParserRule} from '../dist/index';
 
 describe("SelfClose Rule", () => {
 

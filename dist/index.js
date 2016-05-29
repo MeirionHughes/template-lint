@@ -198,4 +198,4 @@ class Linter {
 }
 exports.Linter = Linter;
 
-//# sourceMappingURL=template-lint.js.map
+//# sourceMappingURL=index.js.map
