@@ -11,7 +11,7 @@ export abstract class Rule {
     public name: string;
     public description: string;
     public errors: string[];
-    abstract init(parser: SAXParser, parseState:ParseState)
+    abstract init(parser: SAXParser, parseState: ParseState)
     finalise() { }
 }
 
@@ -19,7 +19,7 @@ export abstract class Rule {
  * Rule to ensure non-void elements do not self-close
  */
 export class SelfCloseRule extends Rule {
-    init(parser: SAXParser, parseState:ParseState) {
+    init(parser: SAXParser, parseState: ParseState) {
 
         const voidTags = [
             'area', 'base', 'br', 'col', 'embed', 'hr',
@@ -27,15 +27,15 @@ export class SelfCloseRule extends Rule {
             'param', 'source', 'track', 'wbr'];
 
         var self = this;
-        
+
         self.errors = [];
         parser.on('startTag', (name, attrs, selfClosing, location) => {
-            
-            if(parseState.scope == 'svg'){       
+
+            if (parseState.scope == 'svg') {
                 return;
             }
-                
-            if (selfClosing) {                
+
+            if (selfClosing) {
                 if (voidTags.indexOf(name) < 0) {
                     let error = "self-closing element [line: " + location.line + "]";
                     self.errors.push(error);
@@ -49,49 +49,47 @@ export class SelfCloseRule extends Rule {
  * Rule to ensure tags are properly closed. 
  */
 export class ParserRule extends Rule {
-    private parseState:ParseState;
+    private parseState: ParseState;
 
-    init(parser: SAXParser, parseState:ParseState) {  
-        this.parseState = parseState;    
-        this.errors = [];        
+    init(parser: SAXParser, parseState: ParseState) {
+        this.parseState = parseState;
+        this.errors = [];
     }
-    
-    finalise(){
-        this.errors = this.parseState.errors;               
+
+    finalise() {
+        this.errors = this.parseState.errors;
     }
 }
 
 /**
  *  Node in traversal stack
  */
-export class ParseNode {    
-    constructor(public scope: string, public name: string, public location:StartTagLocationInfo)
-    {        
-    }      
+export class ParseNode {
+    constructor(public scope: string, public name: string, public location: StartTagLocationInfo) {
+    }
 }
 
 /**
  *  Helper to maintain the current state of open tags  
  */
 export class ParseState {
-    private scopes: string[]; 
-    private voids: string[]; 
-    
+    private scopes: string[];
+    private voids: string[];
+
     public stack: ParseNode[];
     public errors: string[];
 
-       
-    public scope:string;
-    public nextScope:string;
-    
-    constructor(scopes?: string[], voids?:string[]) {
+    public scope: string;
+    public nextScope: string;
+
+    constructor(scopes?: string[], voids?: string[]) {
         if (scopes == null)
             scopes = ['html', 'body', 'template', 'svg'];
-            
-        if(voids == null)
+
+        if (voids == null)
             voids = ['area', 'base', 'br', 'col', 'embed', 'hr',
-            'img', 'input', 'keygen', 'link', 'meta',
-            'param', 'source', 'track', 'wbr'];
+                'img', 'input', 'keygen', 'link', 'meta',
+                'param', 'source', 'track', 'wbr'];
 
         this.scopes = scopes;
         this.voids = voids;
@@ -102,68 +100,67 @@ export class ParseState {
         this.errors = [];
 
         var self = this;
-        var stack = this.stack;                        
+        var stack = this.stack;
 
-        parser.on("startTag", (name, attrs, selfClosing, location) => {            
+        parser.on("startTag", (name, attrs, selfClosing, location) => {
+            self.nextScope = null;
             if (!selfClosing && !self.isVoid(name)) {
-                
+
                 let currentScope = self.scope;
                 let nextScope = ""
 
                 if (stack.length > 0)
-                    nextScope = stack[stack.length-1].scope;
-                    
+                    nextScope = stack[stack.length - 1].scope;
+
                 if (self.isScope(name))
                     nextScope = name;
-                    
+
                 self.nextScope = nextScope;
-                    
+
                 stack.push(new ParseNode(currentScope, name, location));
             }
         });
-        
+
         parser.on("endTag", (name, location) => {
-                        
-            if(stack.length <= 0 || stack[stack.length-1].name != name)
-            {
+
+            if (stack.length <= 0 || stack[stack.length - 1].name != name) {
                 let error = "mismatched close tag found [line: " + location.line + "]";
-                self.errors.push(error);               
+                self.errors.push(error);
             }
-            else
-            {
+            else {
                 stack.pop();
-                if(stack.length > 0){   
-                    self.scope = stack[stack.length-1].scope;
+                if (stack.length > 0) {
+                    self.scope = stack[stack.length - 1].scope;
                 }
-                else{
-                    self.scope = "";                    
-                }               
+                else {
+                    self.scope = "";
+                }
             }
         });
     }
-    
-    initPostRules(parser: SAXParser)
-    {
+
+    initPostRules(parser: SAXParser) {
         var self = this;
-        
-        parser.on("startTag", ()=>{
-             self.scope = self.nextScope;    
-        });             
+
+        parser.on("startTag", () => {
+            if (self.nextScope !== null)
+                self.scope = self.nextScope;
+           self.nextScope = null;
+        });
     }
 
     finalise() {
         let stack = this.stack;
         let errors = this.errors;
-        if(stack.length > 0)
-        {
-            let element = stack[stack.length-1]
+        if (stack.length > 0) {
+            let element = stack[stack.length - 1]
             let error = "suspected unclosed element detected [line: " + element.location.line + "]";
-            errors.push(error);                  
+            errors.push(error);
         }
     }
 
     private isVoid(name: string): boolean {
-        
+
         return this.voids.indexOf(name) >= 0;
     }
 
@@ -189,33 +186,33 @@ export class Linter {
         var parser: SAXParser = new SAXParser({ locationInfo: true });
         var parseState: ParseState = new ParseState();
         var stream: Readable = new Readable();
-                
-        parseState.initPreRules(parser); 
+
+        parseState.initPreRules(parser);
 
         let rules = this.rules;
 
         rules.forEach((rule) => {
             rule.init(parser, parseState);
-        });      
-        
-        parseState.initPostRules(parser);          
-        
-        
+        });
+
+        parseState.initPostRules(parser);
+
+
         stream.push(html);
         stream.push(null);
         var work = stream.pipe(parser);
 
         var completed = new Promise<void>(function (resolve, reject) {
-            work.on("end", () => { 
+            work.on("end", () => {
                 parseState.finalise();
-                resolve(); 
+                resolve();
             });
         });
 
         var ruleTasks = [];
 
         rules.forEach((rule) => {
-            let task = completed.then(() => {      
+            let task = completed.then(() => {
                 rule.finalise();
                 return rule.errors
             });

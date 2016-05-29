@@ -77,6 +77,7 @@ class ParseState {
         var self = this;
         var stack = this.stack;
         parser.on("startTag", (name, attrs, selfClosing, location) => {
+            self.nextScope = null;
             if (!selfClosing && !self.isVoid(name)) {
                 let currentScope = self.scope;
                 let nextScope = "";
@@ -107,7 +108,9 @@ class ParseState {
     initPostRules(parser) {
         var self = this;
         parser.on("startTag", () => {
-            self.scope = self.nextScope;
+            if (self.nextScope !== null)
+                self.scope = self.nextScope;
+            self.nextScope = null;
         });
     }
     finalise() {
