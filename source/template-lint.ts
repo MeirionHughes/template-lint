@@ -8,11 +8,27 @@ import {Readable} from 'stream';
 * Abstract Lint Rule 
 */
 export abstract class Rule {
-    public name: string;
-    public description: string;
-    public errors: string[];
-    abstract init(parser: SAXParser, parseState: ParseState)
-    finalise() { }
+    private errors: Error[];
+    protected reportError(error: Error) {
+        if (error)
+            this.errors.push(error);
+    }
+    
+    init(parser: SAXParser, parseState: ParseState) {
+        this.errors = [];
+    }
+
+    finalise(): Error[] {
+        return this.errors;
+    }
+}
+
+/**
+* An error object
+*/
+export class Error {
+    constructor(public message: string, public line: number, public column: number) {
+    }
 }
 
 /**
@@ -20,6 +36,7 @@ export abstract class Rule {
  */
 export class SelfCloseRule extends Rule {
     init(parser: SAXParser, parseState: ParseState) {
+        super.init(parser, parseState);
 
         const voidTags = [
             'area', 'base', 'br', 'col', 'embed', 'hr',
@@ -28,7 +45,6 @@ export class SelfCloseRule extends Rule {
 
         var self = this;
 
-        self.errors = [];
         parser.on('startTag', (name, attrs, selfClosing, location) => {
 
             if (parseState.scope == 'svg') {
@@ -36,8 +52,7 @@ export class SelfCloseRule extends Rule {
             }
 
             if (selfClosing && voidTags.indexOf(name) < 0) {
-                let error = "self-closing element [line: " + location.line + "]";
-                self.errors.push(error);
+                self.reportError(new Error("self-closing element", location.line, location.col))
             }
         });
     }
@@ -50,12 +65,12 @@ export class ParserRule extends Rule {
     private parseState: ParseState;
 
     init(parser: SAXParser, parseState: ParseState) {
+        super.init(parser, parseState);
         this.parseState = parseState;
-        this.errors = [];
     }
 
-    finalise() {
-        this.errors = this.parseState.errors;
+    finalise(): Error[] {
+        return this.parseState.errors;
     }
 }
 
@@ -75,7 +90,7 @@ export class ParseState {
     private voids: string[];
 
     public stack: ParseNode[];
-    public errors: string[];
+    public errors: Error[];
 
     public scope: string;
     public nextScope: string;
@@ -122,7 +137,7 @@ export class ParseState {
         parser.on("endTag", (name, location) => {
 
             if (stack.length <= 0 || stack[stack.length - 1].name != name) {
-                let error = "mismatched close tag found [line: " + location.line + "]";
+                let error = new Error("mismatched close tag", location.line, location.col);
                 self.errors.push(error);
             }
             else {
@@ -152,7 +167,9 @@ export class ParseState {
         let errors = this.errors;
         if (stack.length > 0) {
             let element = stack[stack.length - 1]
-            let error = "suspected unclosed element detected [line: " + element.location.line + "]";
+            let error = new Error("suspected unclosed element detected",
+                element.location.line, 
+                element.location.col);
             errors.push(error);
         }
     }
@@ -180,6 +197,7 @@ export class Linter {
     }
 
     lint(html: string): Promise<string[]> {
+        
         var parser: SAXParser = new SAXParser({ locationInfo: true });
         var parseState: ParseState = new ParseState();
         var stream: Readable = new Readable();
@@ -211,7 +229,7 @@ export class Linter {
         rules.forEach((rule) => {
             let task = completed.then(() => {
                 rule.finalise();
-                return rule.errors
+                return rule.finalise();
             });
             ruleTasks.push(task);
         });

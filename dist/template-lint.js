@@ -5,27 +5,46 @@ const stream_1 = require('stream');
 * Abstract Lint Rule
 */
 class Rule {
-    finalise() { }
+    reportError(error) {
+        if (error)
+            this.errors.push(error);
+    }
+    init(parser, parseState) {
+        this.errors = [];
+    }
+    finalise() {
+        return this.errors;
+    }
 }
 exports.Rule = Rule;
+/**
+* An error object
+*/
+class Error {
+    constructor(message, line, column) {
+        this.message = message;
+        this.line = line;
+        this.column = column;
+    }
+}
+exports.Error = Error;
 /**
  * Rule to ensure non-void elements do not self-close
  */
 class SelfCloseRule extends Rule {
     init(parser, parseState) {
+        super.init(parser, parseState);
         const voidTags = [
             'area', 'base', 'br', 'col', 'embed', 'hr',
             'img', 'input', 'keygen', 'link', 'meta',
             'param', 'source', 'track', 'wbr'];
         var self = this;
-        self.errors = [];
         parser.on('startTag', (name, attrs, selfClosing, location) => {
             if (parseState.scope == 'svg') {
                 return;
             }
             if (selfClosing && voidTags.indexOf(name) < 0) {
-                let error = "self-closing element [line: " + location.line + "]";
-                self.errors.push(error);
+                self.reportError(new Error("self-closing element", location.line, location.col));
             }
         });
     }
@@ -36,11 +55,11 @@ exports.SelfCloseRule = SelfCloseRule;
  */
 class ParserRule extends Rule {
     init(parser, parseState) {
+        super.init(parser, parseState);
         this.parseState = parseState;
-        this.errors = [];
     }
     finalise() {
-        this.errors = this.parseState.errors;
+        return this.parseState.errors;
     }
 }
 exports.ParserRule = ParserRule;
@@ -89,7 +108,7 @@ class ParseState {
         });
         parser.on("endTag", (name, location) => {
             if (stack.length <= 0 || stack[stack.length - 1].name != name) {
-                let error = "mismatched close tag found [line: " + location.line + "]";
+                let error = new Error("mismatched close tag", location.line, location.col);
                 self.errors.push(error);
             }
             else {
@@ -116,7 +135,7 @@ class ParseState {
         let errors = this.errors;
         if (stack.length > 0) {
             let element = stack[stack.length - 1];
-            let error = "suspected unclosed element detected [line: " + element.location.line + "]";
+            let error = new Error("suspected unclosed element detected", element.location.line, element.location.col);
             errors.push(error);
         }
     }
@@ -160,7 +179,7 @@ class Linter {
         rules.forEach((rule) => {
             let task = completed.then(() => {
                 rule.finalise();
-                return rule.errors;
+                return rule.finalise();
             });
             ruleTasks.push(task);
         });

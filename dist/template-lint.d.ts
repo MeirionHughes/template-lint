@@ -3,11 +3,19 @@ import { SAXParser, StartTagLocationInfo } from 'parse5';
 * Abstract Lint Rule
 */
 export declare abstract class Rule {
-    name: string;
-    description: string;
-    errors: string[];
-    abstract init(parser: SAXParser, parseState: ParseState): any;
-    finalise(): void;
+    private errors;
+    protected reportError(error: Error): void;
+    init(parser: SAXParser, parseState: ParseState): void;
+    finalise(): Error[];
+}
+/**
+* An error object
+*/
+export declare class Error {
+    message: string;
+    line: number;
+    column: number;
+    constructor(message: string, line: number, column: number);
 }
 /**
  * Rule to ensure non-void elements do not self-close
@@ -21,7 +29,7 @@ export declare class SelfCloseRule extends Rule {
 export declare class ParserRule extends Rule {
     private parseState;
     init(parser: SAXParser, parseState: ParseState): void;
-    finalise(): void;
+    finalise(): Error[];
 }
 /**
  *  Node in traversal stack
@@ -39,7 +47,7 @@ export declare class ParseState {
     private scopes;
     private voids;
     stack: ParseNode[];
-    errors: string[];
+    errors: Error[];
     scope: string;
     nextScope: string;
     constructor(scopes?: string[], voids?: string[]);
