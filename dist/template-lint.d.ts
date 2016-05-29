@@ -4,6 +4,7 @@ import { SAXParser, StartTagLocationInfo } from 'parse5';
 */
 export declare abstract class Rule {
     private errors;
+    constructor();
     protected reportError(error: Error): void;
     init(parser: SAXParser, parseState: ParseState): void;
     finalise(): Error[];

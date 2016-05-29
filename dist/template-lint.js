@@ -5,6 +5,9 @@ const stream_1 = require('stream');
 * Abstract Lint Rule
 */
 class Rule {
+    constructor() {
+        this.errors = [];
+    }
     reportError(error) {
         if (error)
             this.errors.push(error);
