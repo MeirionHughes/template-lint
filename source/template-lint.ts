@@ -228,7 +228,6 @@ export class Linter {
 
         rules.forEach((rule) => {
             let task = completed.then(() => {
-                rule.finalise();
                 return rule.finalise();
             });
             ruleTasks.push(task);
