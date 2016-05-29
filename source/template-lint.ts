@@ -9,11 +9,14 @@ import {Readable} from 'stream';
 */
 export abstract class Rule {
     private errors: Error[];
+    
+    constructor()
+    {
+        this.errors = [];
+    }
         
     protected reportError(error: Error) {
         if (error){
-            if(this.errors == null)
-               this.errors = [];
             this.errors.push(error);
         }
     }

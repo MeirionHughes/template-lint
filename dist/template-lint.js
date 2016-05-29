@@ -9,14 +9,16 @@ class Rule {
         this.errors = [];
     }
     reportError(error) {
-        if (error)
+        if (error) {
             this.errors.push(error);
+        }
     }
     init(parser, parseState) {
-        this.errors = [];
     }
     finalise() {
-        return this.errors;
+        let errors = this.errors;
+        this.errors = [];
+        return errors;
     }
 }
 exports.Rule = Rule;
