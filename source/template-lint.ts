@@ -9,23 +9,22 @@ import {Readable} from 'stream';
 */
 export abstract class Rule {
     private errors: Error[];
-    
-    constructor()
-    {
-        this.errors = [];
-    }
-    
+        
     protected reportError(error: Error) {
-        if (error)
+        if (error){
+            if(this.errors == null)
+               this.errors = [];
             this.errors.push(error);
+        }
     }
     
     init(parser: SAXParser, parseState: ParseState) {
-        this.errors = [];
     }
 
     finalise(): Error[] {
-        return this.errors;
+        let errors = this.errors;
+        this.errors = [];
+        return errors;        
     }
 }
 
