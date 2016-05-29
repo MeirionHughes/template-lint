@@ -21,10 +21,6 @@ class SelfCloseRule extends Rule {
         self.errors = [];
         parser.on('startTag', (name, attrs, selfClosing, location) => {
             if (parseState.scope == 'svg') {
-                if (name == 'svg' && selfClosing) {
-                    let error = "self-closing element [line: " + location.line + "]";
-                    self.errors.push(error);
-                }
                 return;
             }
             if (selfClosing) {
@@ -70,20 +66,21 @@ class ParseState {
             scopes = ['html', 'body', 'template', 'svg'];
         this.scopes = scopes;
     }
-    init(parser) {
+    initPreRules(parser) {
         this.stack = [];
         this.errors = [];
         var self = this;
         var stack = this.stack;
         parser.on("startTag", (name, attrs, selfClosing, location) => {
             if (!selfClosing && !self.isVoid(name)) {
-                let scope = "";
+                let currentScope = self.scope;
+                let nextScope = "";
                 if (stack.length > 0)
-                    scope = stack[stack.length - 1].scope;
+                    nextScope = stack[stack.length - 1].scope;
                 if (self.isScope(name))
-                    scope = name;
-                self.scope = scope;
-                stack.push(new ParseNode(scope, name, location));
+                    nextScope = name;
+                self.nextScope = nextScope;
+                stack.push(new ParseNode(currentScope, name, location));
             }
         });
         parser.on("endTag", (name, location) => {
@@ -93,7 +90,19 @@ class ParseState {
             }
             else {
                 stack.pop();
+                if (stack.length > 0) {
+                    self.scope = stack[stack.length - 1].scope;
+                }
+                else {
+                    self.scope = "";
+                }
             }
+        });
+    }
+    initPostRules(parser) {
+        var self = this;
+        parser.on("startTag", () => {
+            self.scope = self.nextScope;
         });
     }
     finalise() {
@@ -130,12 +139,12 @@ class Linter {
         var parser = new parse5_1.SAXParser({ locationInfo: true });
         var parseState = new ParseState();
         var stream = new stream_1.Readable();
-        // must be done before initialising rules
-        parseState.init(parser);
-        var rules = this.rules;
+        parseState.initPreRules(parser);
+        let rules = this.rules;
         rules.forEach((rule) => {
             rule.init(parser, parseState);
         });
+        parseState.initPostRules(parser);
         stream.push(html);
         stream.push(null);
         var work = stream.pipe(parser);

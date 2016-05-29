@@ -30,11 +30,8 @@ export class SelfCloseRule extends Rule {
         
         self.errors = [];
         parser.on('startTag', (name, attrs, selfClosing, location) => {
-            if(parseState.scope == 'svg'){
-                if(name == 'svg' && selfClosing){
-                    let error = "self-closing element [line: " + location.line + "]";
-                    self.errors.push(error);
-                }                
+            
+            if(parseState.scope == 'svg'){       
                 return;
             }
                 
@@ -79,9 +76,10 @@ export class ParseNode {
 export class ParseState {
     public stack: ParseNode[];
     public errors: string[];
-    private scopes: string[];
-    
+    private scopes: string[]; 
+       
     public scope:string;
+    public nextScope:string;
     
     constructor(scopes?: string[]) {
         if (scopes == null)
@@ -90,7 +88,7 @@ export class ParseState {
         this.scopes = scopes;
     }
 
-    init(parser: SAXParser) {
+    initPreRules(parser: SAXParser) {
         this.stack = [];
         this.errors = [];
 
@@ -99,17 +97,19 @@ export class ParseState {
 
         parser.on("startTag", (name, attrs, selfClosing, location) => {            
             if (!selfClosing && !self.isVoid(name)) {
-                let scope = ""
+                
+                let currentScope = self.scope;
+                let nextScope = ""
 
                 if (stack.length > 0)
-                    scope = stack[stack.length-1].scope;
+                    nextScope = stack[stack.length-1].scope;
                     
                 if (self.isScope(name))
-                    scope = name;
+                    nextScope = name;
                     
-                self.scope = scope; 
+                self.nextScope = nextScope;
                     
-                stack.push(new ParseNode(scope, name, location));
+                stack.push(new ParseNode(currentScope, name, location));
             }
         });
         
@@ -120,10 +120,26 @@ export class ParseState {
                 let error = "mismatched close tag found [line: " + location.line + "]";
                 self.errors.push(error);               
             }
-            else{
-                stack.pop();                
-            }           
+            else
+            {
+                stack.pop();
+                if(stack.length > 0){   
+                    self.scope = stack[stack.length-1].scope;
+                }
+                else{
+                    self.scope = "";                    
+                }               
+            }
         });
+    }
+    
+    initPostRules(parser: SAXParser)
+    {
+        var self = this;
+        
+        parser.on("startTag", ()=>{
+             self.scope = self.nextScope;    
+        });             
     }
 
     finalise() {
@@ -168,16 +184,17 @@ export class Linter {
         var parser: SAXParser = new SAXParser({ locationInfo: true });
         var parseState: ParseState = new ParseState();
         var stream: Readable = new Readable();
-        
-        // must be done before initialising rules
-        parseState.init(parser); 
+                
+        parseState.initPreRules(parser); 
 
-        var rules = this.rules;
+        let rules = this.rules;
 
         rules.forEach((rule) => {
             rule.init(parser, parseState);
-        });
-               
+        });      
+        
+        parseState.initPostRules(parser);          
+        
         
         stream.push(html);
         stream.push(null);

@@ -40,8 +40,10 @@ export declare class ParseState {
     errors: string[];
     private scopes;
     scope: string;
+    nextScope: string;
     constructor(scopes?: string[]);
-    init(parser: SAXParser): void;
+    initPreRules(parser: SAXParser): void;
+    initPostRules(parser: SAXParser): void;
     finalise(): void;
     private isVoid(name);
     private isScope(name);
