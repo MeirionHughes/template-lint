@@ -7,7 +7,7 @@
     "url": "https://github.com/MeirionHughes/aurelia-template-lint"
   },
   "license": "(Apache-2.0)",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "keywords": [
     "template",
     "html",
@@ -17,7 +17,6 @@
     "angular2",
     "web-component"
   ],
-  
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "devDependencies": {
