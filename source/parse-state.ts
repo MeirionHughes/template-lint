@@ -16,6 +16,8 @@ export class ParseState {
     public scope: string;
     public nextScope: string;
 
+    public nextStack: ParseNode;
+
     constructor(scopes?: string[], voids?: string[]) {
         if (scopes == null)
             scopes = ['html', 'body', 'template', 'svg'];
@@ -50,8 +52,7 @@ export class ParseState {
                     nextScope = name;
 
                 self.nextScope = nextScope;
-
-                stack.push(new ParseNode(currentScope, name, location));
+                self.nextStack = new ParseNode(currentScope, name, location);
             }
         });
 
@@ -80,6 +81,10 @@ export class ParseState {
             if (self.nextScope !== null)
                 self.scope = self.nextScope;
             self.nextScope = null;
+
+            if (self.nextStack !== null)
+                self.stack.push(self.nextStack)
+            self.nextStack = null;
         });
     }
 
@@ -89,7 +94,7 @@ export class ParseState {
         if (stack.length > 0) {
             let element = stack[stack.length - 1]
             let error = new RuleError("suspected unclosed element detected",
-                element.location.line, 
+                element.location.line,
                 element.location.col);
             errors.push(error);
         }
