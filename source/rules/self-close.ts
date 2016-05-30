@@ -20,8 +20,10 @@ export class SelfCloseRule extends Rule {
         var self = this;
 
         parser.on('startTag', (name, attrs, selfClosing, location) => {
+           
+            let scope = parseState.scope;
 
-            if (parseState.scope == 'svg') {
+            if (scope == 'svg' || scope == 'math') {
                 return;
             }
 

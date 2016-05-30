@@ -13,7 +13,8 @@ class SelfCloseRule extends rule_1.Rule {
             'param', 'source', 'track', 'wbr'];
         var self = this;
         parser.on('startTag', (name, attrs, selfClosing, location) => {
-            if (parseState.scope == 'svg') {
+            let scope = parseState.scope;
+            if (scope == 'svg' || scope == 'math') {
                 return;
             }
             if (selfClosing && voidTags.indexOf(name) < 0) {

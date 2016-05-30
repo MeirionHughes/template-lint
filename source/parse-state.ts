@@ -19,7 +19,7 @@ export class ParseState {
 
     constructor(scopes?: string[], voids?: string[]) {
         if (scopes == null)
-            scopes = ['html', 'body', 'template', 'svg'];
+            scopes = ['html', 'body', 'template', 'svg', 'math'];
 
         if (voids == null)
             voids = ['area', 'base', 'br', 'col', 'embed', 'hr',

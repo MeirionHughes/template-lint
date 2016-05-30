@@ -7,7 +7,7 @@ const rule_error_1 = require('./rule-error');
 class ParseState {
     constructor(scopes, voids) {
         if (scopes == null)
-            scopes = ['html', 'body', 'template', 'svg'];
+            scopes = ['html', 'body', 'template', 'svg', 'math'];
         if (voids == null)
             voids = ['area', 'base', 'br', 'col', 'embed', 'hr',
                 'img', 'input', 'keygen', 'link', 'meta',

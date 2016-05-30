@@ -25,6 +25,22 @@ describe("SelfClose Rule", () => {
         done();
       });
   });
+  
+  it("will allow self-close within math scope", (done) => {
+    linter.lint('<template><math><plus/></math></template>')
+      .then((errors) => {
+        expect(errors.length).toBe(0);
+        done();
+      });
+  });
+  
+  it("will reject self-close on math", (done) => {
+    linter.lint('<template><math/></template>')
+      .then((errors) => {
+        expect(errors.length).toBeGreaterThan(0);
+        done();
+      });
+  });
 
   it("will reject self-closed template", (done) => {
     linter.lint('<template/>')
