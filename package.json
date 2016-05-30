@@ -4,7 +4,7 @@
   "author": "Meirion Hughes <crakinshot@yahoo.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MeirionHughes/aurelia-template-lint"
+    "url": "https://github.com/MeirionHughes/template-lint"
   },
   "license": "(Apache-2.0)",
   "version": "0.3.0",

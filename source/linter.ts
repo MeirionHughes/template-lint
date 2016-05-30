@@ -17,7 +17,7 @@ export class Linter {
         this.rules = rules;
     }
 
-    lint(html: string): Promise<string[]> {
+    lint(html: string): Promise<RuleError[]> {
         
         var parser: SAXParser = new SAXParser({ locationInfo: true });
         var parseState: ParseState = new ParseState();
@@ -56,7 +56,7 @@ export class Linter {
 
         return Promise.all(ruleTasks).then(results => {
 
-            var all = [];
+            var all = new Array<RuleError>();
 
             results.forEach(parts => {
                 all = all.concat(parts);
