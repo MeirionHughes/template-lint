@@ -95,11 +95,11 @@ export class ParseState {
         }
     }
 
-    private isVoid(name: string): boolean {
+    public isVoid(name: string): boolean {
         return this.voids.indexOf(name) >= 0;
     }
 
-    private isScope(name: string): boolean {
+    public isScope(name: string): boolean {
         return this.scopes.indexOf(name) >= 0;
     }
 }
