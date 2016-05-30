@@ -35,7 +35,7 @@ class Linter {
             ruleTasks.push(task);
         });
         return Promise.all(ruleTasks).then(results => {
-            var all = [];
+            var all = new Array();
             results.forEach(parts => {
                 all = all.concat(parts);
             });
