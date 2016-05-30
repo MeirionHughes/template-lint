@@ -15,6 +15,6 @@ export declare class ParseState {
     initPreRules(parser: SAXParser): void;
     initPostRules(parser: SAXParser): void;
     finalise(): void;
-    private isVoid(name);
-    private isScope(name);
+    isVoid(name: string): boolean;
+    isScope(name: string): boolean;
 }
