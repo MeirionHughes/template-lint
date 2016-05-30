@@ -22,6 +22,7 @@ class ParseState {
         var stack = this.stack;
         parser.on("startTag", (name, attrs, selfClosing, location) => {
             self.nextScope = null;
+            self.nextStack = null;
             if (!selfClosing && !self.isVoid(name)) {
                 let currentScope = self.scope;
                 let nextScope = "";
@@ -30,7 +31,7 @@ class ParseState {
                 if (self.isScope(name))
                     nextScope = name;
                 self.nextScope = nextScope;
-                stack.push(new parse_node_1.ParseNode(currentScope, name, location));
+                self.nextStack = new parse_node_1.ParseNode(currentScope, name, location);
             }
         });
         parser.on("endTag", (name, location) => {
@@ -55,6 +56,9 @@ class ParseState {
             if (self.nextScope !== null)
                 self.scope = self.nextScope;
             self.nextScope = null;
+            if (self.nextStack != null)
+                self.stack.push(self.nextStack);
+            self.nextStack = null;
         });
     }
     finalise() {

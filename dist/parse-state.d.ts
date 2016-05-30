@@ -11,6 +11,7 @@ export declare class ParseState {
     errors: RuleError[];
     scope: string;
     nextScope: string;
+    nextStack: ParseNode;
     constructor(scopes?: string[], voids?: string[]);
     initPreRules(parser: SAXParser): void;
     initPostRules(parser: SAXParser): void;
