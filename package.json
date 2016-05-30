@@ -1,12 +1,23 @@
 {
   "name": "template-lint",
   "description": "sanity check of template html",
+  "author": "Meirion Hughes <crakinshot@yahoo.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/MeirionHughes/aurelia-template-lint"
   },
   "license": "(Apache-2.0)",
   "version": "0.2.3",
+  "keywords": [
+    "template",
+    "html",
+    "lint",
+    "sanity",
+    "aurelia",
+    "angular2",
+    "web-component"
+  ],
+  
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "devDependencies": {
