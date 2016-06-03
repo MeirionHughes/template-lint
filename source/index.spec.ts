@@ -3,13 +3,7 @@ import {
   Linter,
   SelfCloseRule,
   ParserRule} from '../dist/index';
-  
-describe("Travis Test", () => {
-   it("will allow self-close within svg scope", () => {
-     expect(true).toBe(false);
-   });
-});
-
+    
 describe("SelfClose Rule", () => {
 
   var linter: Linter = new Linter([
