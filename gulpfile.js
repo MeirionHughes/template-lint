@@ -15,7 +15,7 @@ var paths = {
     spec: "spec/"
 }
 
-gulp.task('compile', function () {
+gulp.task('compile:typescript', function () {
 
     var source = ['!' + paths.source + '**/*spec.ts',
         paths.source + '**/*.ts',
@@ -37,7 +37,7 @@ gulp.task('compile', function () {
     ]);
 });
 
-gulp.task('compile-tests', ['compile'], function () {
+gulp.task('compile:tests', ['compile:typescript'], function () {
     var source = [paths.source + '**/*spec.ts',
                  'typings/index.d.ts'];
 
@@ -54,7 +54,7 @@ gulp.task('compile-tests', ['compile'], function () {
         .pipe(gulp.dest(paths.spec));
 });
 
-gulp.task('test', ['compile-tests'], function () {
+gulp.task('test', ['compile:tests'], function () {
     return gulp.src('spec/*.js')
         .pipe(plumber())
         .pipe(jasmine({ verbose: true }));
@@ -64,14 +64,6 @@ gulp.task('watch', ['test'], function () {
 
     gulp.watch(paths.source + '**/*.ts', ['test']);
 
-});
-
-gulp.task('flush', function () {
-    for (var prop in require.cache) {
-        if (prop.indexOf("node_modules") === -1) {
-            delete require.cache[prop];
-        }
-    }
 });
 
 gulp.task('default', function () {
