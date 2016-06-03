@@ -1,6 +1,11 @@
 "use strict";
 /// <reference path="index.ts" />
 const index_1 = require('../dist/index');
+describe("Travis Test", () => {
+    it("will allow self-close within svg scope", () => {
+        expect(true).toBe(false);
+    });
+});
 describe("SelfClose Rule", () => {
     var linter = new index_1.Linter([
         new index_1.SelfCloseRule()
