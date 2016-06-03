@@ -33,7 +33,8 @@
     "typings": "^1.0.4"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "test":"jasmine"
   },
   "dependencies": {
     "parse5": "^2.1.5"
