@@ -12,11 +12,6 @@ export class SelfCloseRule extends Rule {
     init(parser: SAXParser, parseState: ParseState) {
         super.init(parser, parseState);
 
-        const voidTags = [
-            'area', 'base', 'br', 'col', 'embed', 'hr',
-            'img', 'input', 'keygen', 'link', 'meta',
-            'param', 'source', 'track', 'wbr'];
-
         var self = this;
 
         parser.on('startTag', (name, attrs, selfClosing, location) => {
@@ -27,7 +22,7 @@ export class SelfCloseRule extends Rule {
                 return;
             }
 
-            if (selfClosing && voidTags.indexOf(name) < 0) {
+            if (selfClosing && parseState.isVoid(name) == false) {
                 self.reportError(new RuleError("self-closing element", location.line, location.col))
             }
         });
