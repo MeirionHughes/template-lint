@@ -3,14 +3,16 @@ const parse5_1 = require('parse5');
 const stream_1 = require('stream');
 const parse_state_1 = require('./parse-state');
 class Linter {
-    constructor(rules) {
+    constructor(rules, scopes, voids) {
         if (!rules)
             rules = [];
         this.rules = rules;
+        this.scopes = scopes;
+        this.voids = voids;
     }
     lint(html) {
         var parser = new parse5_1.SAXParser({ locationInfo: true });
-        var parseState = new parse_state_1.ParseState();
+        var parseState = new parse_state_1.ParseState(this.scopes, this.voids);
         var stream = new stream_1.Readable();
         parseState.initPreRules(parser);
         let rules = this.rules;
