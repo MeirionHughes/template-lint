@@ -10,5 +10,12 @@ __export(require('./rule-error'));
 __export(require('./self-close'));
 __export(require('./parser'));
 __export(require('./obsolete-tag'));
+"use strict";
+const index_1 = require('./index');
+const index_2 = require('./index');
+exports.DefaultRules = [
+    new index_1.SelfCloseRule(),
+    new index_2.ParserRule()
+];
 
 //# sourceMappingURL=index.js.map

@@ -9,3 +9,13 @@ export * from './rule-error';
 export * from './self-close';
 export * from './parser';
 export * from './obsolete-tag';
+
+"use strict";
+
+import {SelfCloseRule} from './index'
+import {ParserRule} from './index'
+
+export var DefaultRules = [
+    new SelfCloseRule(),
+    new ParserRule()
+]
