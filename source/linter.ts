@@ -10,17 +10,22 @@ import {RuleError} from './rule-error';
 export class Linter {
 
     private rules: Array<Rule>;
+    private scopes:string[];
+    private voids:string[];
 
-    constructor(rules: Rule[]) {
+    constructor(rules: Rule[], scopes?:string[], voids?:string[]) {
         if (!rules)
            rules = [];
+           
         this.rules = rules;
+        this.scopes = scopes;
+        this.voids = voids;
     }
 
     lint(html: string): Promise<RuleError[]> {
         
         var parser: SAXParser = new SAXParser({ locationInfo: true });
-        var parseState: ParseState = new ParseState();
+        var parseState: ParseState = new ParseState(this.scopes, this.voids);
         var stream: Readable = new Readable();
 
         parseState.initPreRules(parser);
