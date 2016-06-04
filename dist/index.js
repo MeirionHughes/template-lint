@@ -10,6 +10,7 @@ __export(require('./rule-error'));
 __export(require('./self-close'));
 __export(require('./parser'));
 __export(require('./obsolete-tag'));
+__export(require('./obsolete-attribute'));
 "use strict";
 const index_1 = require('./index');
 const index_2 = require('./index');

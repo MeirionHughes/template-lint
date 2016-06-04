@@ -9,6 +9,7 @@ export * from './rule-error';
 export * from './self-close';
 export * from './parser';
 export * from './obsolete-tag';
+export * from './obsolete-attribute';
 
 "use strict";
 
