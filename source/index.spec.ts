@@ -1,8 +1,8 @@
 /// <reference path="index.ts" />
-import {
-  Linter,
-  SelfCloseRule,
-  ParserRule} from '../dist/index';
+import {Linter} from './linter';
+import {SelfCloseRule} from './index';
+import {ParserRule} from './index';
+import {ObsoleteTagRule} from './index';
     
 describe("SelfClose Rule", () => {
 
@@ -75,6 +75,7 @@ describe("SelfClose Rule", () => {
       });
   });
 });
+
 
 describe("Parser Rule", () => {
 

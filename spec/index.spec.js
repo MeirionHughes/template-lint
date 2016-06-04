@@ -1,8 +1,10 @@
 "use strict";
 /// <reference path="index.ts" />
+const linter_1 = require('../dist/linter');
 const index_1 = require('../dist/index');
+const index_2 = require('../dist/index');
 describe("SelfClose Rule", () => {
-    var linter = new index_1.Linter([
+    var linter = new linter_1.Linter([
         new index_1.SelfCloseRule()
     ]);
     it("will allow self-close within svg scope", (done) => {
@@ -63,8 +65,8 @@ describe("SelfClose Rule", () => {
     });
 });
 describe("Parser Rule", () => {
-    var linter = new index_1.Linter([
-        new index_1.ParserRule(),
+    var linter = new linter_1.Linter([
+        new index_2.ParserRule(),
     ]);
     it("will reject unclosed element", (done) => {
         linter.lint('<template>')

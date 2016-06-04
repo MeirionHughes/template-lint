@@ -1,5 +1,5 @@
 "use strict";
-const rule_1 = require('../rule');
+const rule_1 = require('./rule');
 /**
  * Rule to ensure tags are properly closed.
  */
