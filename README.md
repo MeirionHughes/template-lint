@@ -30,7 +30,7 @@ There are currently four rules bundled with this package:
   * *identify obsolete tag usage*
 * **ObsoleteAttributes**
   * *identify obsolete attrubute usage*
-  * 
+
 ##Usage
 
 For use with gulp, [there is a gulp plugin available](https://github.com/MeirionHughes/gulp-template-lint)
