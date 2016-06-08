@@ -20,7 +20,7 @@ The intended goal of this work is to sanity check your template html during the 
 This project serves as the basis for checking html and can be extended upon for different template flavors. 
 
 ## Rules
-There are currently two rules bundled with this package:
+There are currently four rules bundled with this package:
 
 * **SelfClose** 
   * *ensure non-void elements do not self-close* 
