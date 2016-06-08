@@ -26,11 +26,13 @@ There are currently two rules bundled with this package:
   * *ensure non-void elements do not self-close* 
 * **Parser**
   * *returns errors for unclosed or ill-matched elements, as captured during parsing*
-  
+* **ObsoleteTag**
+  * *identify obsolete tag usage*
+* **ObsoleteAttributes**
+  * *identify obsolete attrubute usage*
 ##Usage
 
 For use with gulp, [there is a gulp plugin available](https://github.com/MeirionHughes/gulp-template-lint)
- 
   
 ##Icon
 
