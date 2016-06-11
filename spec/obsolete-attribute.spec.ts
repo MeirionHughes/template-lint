@@ -5,9 +5,9 @@ describe("ObsoleteAttribute Rule", () => {
 
   var linter: Linter = new Linter([
     new ObsoleteAttributeRule([
-      { attr: 'atty', tag: 'my-tag', msg:"atty is obsolete on <my-tag>"},
+      { attr: 'atty', tag: 'my-tag', msg:"use 'foo' instead"},
       { attr: 'atty2', tag: ''  },
-      { attr: 'atty3',  tag: null }
+      { attr: 'atty3'}
     ]),
   ]);
 
@@ -26,6 +26,7 @@ describe("ObsoleteAttribute Rule", () => {
       .then((errors) => {
         expect(errors.length).toBe(1);
         expect(errors[0].message).toBe("atty attribute is obsolete");
+        expect(errors[0].detail).toBe("use 'foo' instead");
         done();
       });
   });
