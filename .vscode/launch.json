@@ -2,6 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
+            
             "name": "Launch",
             "type": "node",
             "request": "launch",
@@ -9,7 +10,8 @@
             "stopOnEntry": false,
             "args": ["test"],
             "cwd": "${workspaceRoot}",
-            "preLaunchTask": null,
+            "preLaunchTask": "compile:tests",
+            "internalConsoleOptions": "openOnSessionStart" ,
             "runtimeExecutable": null,
             "runtimeArgs": [
                 "--nolazy"
@@ -19,7 +21,8 @@
             },
             "externalConsole": false,
             "sourceMaps": true,            
-            "outDir": "${workspaceRoot}/spec" //["${workspaceRoot}/dist",  "${workspaceRoot}/spec"]
+            //"outDir": "${workspaceRoot}/dist"
+            "outDir": "${workspaceRoot}/spec"
         },
         {
             "name": "Attach",

@@ -3,10 +3,11 @@
 * An error object
 */
 class RuleError {
-    constructor(message, line, column) {
+    constructor(message, line, column, detail) {
         this.message = message;
         this.line = line;
         this.column = column;
+        this.detail = detail;
     }
 }
 exports.RuleError = RuleError;

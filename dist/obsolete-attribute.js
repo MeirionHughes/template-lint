@@ -7,27 +7,18 @@ const rule_error_1 = require('./rule-error');
 class ObsoleteAttributeRule extends rule_1.Rule {
     constructor(obsolete) {
         super();
-        this.obsolete = [];
-        obsolete.forEach(x => {
-            if (x['name'] != undefined) {
-                this.obsolete.push({
-                    name: x.name,
-                    tag: x.tag || ""
-                });
-            }
-        });
+        this.obsoletes = obsolete;
     }
     init(parser, parseState) {
         super.init(parser, parseState);
-        var obsolete = this.obsolete;
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
             attrs.forEach(attr => {
-                var obsoleteIndex = obsolete.findIndex((x) => x.name == attr.name);
+                var obsoleteIndex = this.obsoletes.findIndex((x) => x.attr == attr.name);
                 if (obsoleteIndex >= 0) {
-                    var entry = obsolete[obsoleteIndex];
+                    var entry = this.obsoletes[obsoleteIndex];
                     if (entry.tag == null || entry.tag == "" || entry.tag == tag) {
-                        let str = `${entry.name} attribute is obsolete`;
-                        let error = new rule_error_1.RuleError(str, loc.line, loc.col);
+                        let str = `${entry.attr} attribute is obsolete`;
+                        let error = new rule_error_1.RuleError(str, loc.line, loc.col, entry.msg);
                         this.reportError(error);
                     }
                 }

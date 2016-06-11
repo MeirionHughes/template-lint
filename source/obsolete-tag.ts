@@ -11,24 +11,27 @@ import {RuleError} from './rule-error';
 export class ObsoleteTagRule extends Rule {
     private parseState: ParseState;
     
-    obsolete:Array<string>
+    obsoletes:Array<{tag:string, msg?:string}>
     
-    constructor(obsolete?:Array<string>)
+    constructor(obsolete?:Array<{tag:string, msg?:string}>)
     {                
-        super();                     
-        this.obsolete = obsolete?obsolete:[]     
+        super();     
+
+        this.obsoletes = obsolete ? obsolete:[]     
     }
 
     init(parser: SAXParser, parseState: ParseState) {
         super.init(parser, parseState);
+       
         
-        var obsolete = this.obsolete;
-        
-        parser.on("startTag", (name, attrs, selfClosing, loc)=>{                     
-            if(obsolete.indexOf(name) != -1 )
+        parser.on("startTag", (tag, attrs, selfClosing, loc)=>{                     
+            
+            var result = this.obsoletes.find(x=>x.tag == tag);
+
+            if(result)
             {
-                let str = "<"+name+"> is obsolete";
-                let error = new RuleError(str, loc.line, loc.col);
+                let str = `<${tag}> is obsolete`;
+                let error = new RuleError(str, loc.line, loc.col, result.msg);
                 this.reportError(error);
             }
         });

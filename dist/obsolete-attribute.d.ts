@@ -6,10 +6,11 @@ import { ParseState } from './parse-state';
  */
 export declare class ObsoleteAttributeRule extends Rule {
     private parseState;
-    private obsolete;
+    private obsoletes;
     constructor(obsolete?: Array<{
-        tag: string;
-        name: string;
+        attr: string;
+        tag?: string;
+        msg?: string;
     }>);
     init(parser: SAXParser, parseState: ParseState): void;
 }

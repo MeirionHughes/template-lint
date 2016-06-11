@@ -6,7 +6,13 @@ import { ParseState } from './parse-state';
  */
 export declare class ObsoleteTagRule extends Rule {
     private parseState;
-    obsolete: Array<string>;
-    constructor(obsolete?: Array<string>);
+    obsoletes: Array<{
+        tag: string;
+        msg?: string;
+    }>;
+    constructor(obsolete?: Array<{
+        tag: string;
+        msg?: string;
+    }>);
     init(parser: SAXParser, parseState: ParseState): void;
 }

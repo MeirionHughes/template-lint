@@ -7,15 +7,15 @@ const rule_error_1 = require('./rule-error');
 class ObsoleteTagRule extends rule_1.Rule {
     constructor(obsolete) {
         super();
-        this.obsolete = obsolete ? obsolete : [];
+        this.obsoletes = obsolete ? obsolete : [];
     }
     init(parser, parseState) {
         super.init(parser, parseState);
-        var obsolete = this.obsolete;
-        parser.on("startTag", (name, attrs, selfClosing, loc) => {
-            if (obsolete.indexOf(name) != -1) {
-                let str = "<" + name + "> is obsolete";
-                let error = new rule_error_1.RuleError(str, loc.line, loc.col);
+        parser.on("startTag", (tag, attrs, selfClosing, loc) => {
+            var result = this.obsoletes.find(x => x.tag == tag);
+            if (result) {
+                let str = `<${tag}> is obsolete`;
+                let error = new rule_error_1.RuleError(str, loc.line, loc.col, result.msg);
                 this.reportError(error);
             }
         });

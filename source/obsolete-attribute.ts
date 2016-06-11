@@ -11,40 +11,28 @@ import {RuleError} from './rule-error';
 export class ObsoleteAttributeRule extends Rule {
     private parseState: ParseState;
 
-    private obsolete: Array<{ tag: string, name: string }>
+    private obsoletes: Array<{attr: string, tag?: string, msg?:string }>
 
-    constructor(obsolete?: Array<{ tag: string, name: string }>) {
+    constructor(obsolete?: Array<{attr: string, tag?: string, msg?:string }>) {
         super();
         
-        this.obsolete = [];
-
-        obsolete.forEach(x => {
-            if (x['name'] != undefined) {
-                this.obsolete.push({
-                    name: x.name,
-                    tag: x.tag || ""
-                });
-            }
-        })
+        this.obsoletes = obsolete;
     }
 
     init(parser: SAXParser, parseState: ParseState) {
         super.init(parser, parseState);
 
-        var obsolete = this.obsolete;
-
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
-
             attrs.forEach(attr => {
 
-                var obsoleteIndex = obsolete.findIndex((x) => x.name == attr.name);
+                var obsoleteIndex = this.obsoletes.findIndex((x) => x.attr == attr.name);
 
                 if (obsoleteIndex >= 0) {
-                    var entry = obsolete[obsoleteIndex];
+                    var entry = this.obsoletes[obsoleteIndex];
 
                     if (entry.tag == null || entry.tag == "" || entry.tag == tag) {
-                        let str = `${entry.name} attribute is obsolete`;
-                        let error = new RuleError(str, loc.line, loc.col);
+                        let str = `${entry.attr} attribute is obsolete`;
+                        let error = new RuleError(str, loc.line, loc.col, entry.msg);
                         this.reportError(error);
                     }
                 }

@@ -1,15 +1,13 @@
-/// <reference path="index.ts" />
-import {Linter} from './linter';
-import {ObsoleteAttributeRule} from './index';
+import {Linter} from '../source/linter';
+import {ObsoleteAttributeRule} from '../source/index';
 
 describe("ObsoleteAttribute Rule", () => {
 
   var linter: Linter = new Linter([
     new ObsoleteAttributeRule([
-      { tag: 'my-tag', name: 'atty' },
-      { tag: '', name: 'atty2' },
-      { tag: null, name: 'atty3' },
-      { tag: null, name: undefined }
+      { attr: 'atty', tag: 'my-tag', msg:"atty is obsolete on <my-tag>"},
+      { attr: 'atty2', tag: ''  },
+      { attr: 'atty3',  tag: null }
     ]),
   ]);
 

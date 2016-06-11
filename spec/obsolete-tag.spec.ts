@@ -1,11 +1,10 @@
-/// <reference path="index.ts" />
-import {Linter} from './linter';
-import {ObsoleteTagRule} from './index';
+import {Linter} from '../source/linter';
+import {ObsoleteTagRule} from '../source/index';
     
 describe("ObsoleteTag Rule", () => {
 
   var linter: Linter = new Linter([
-    new ObsoleteTagRule(['my-tag']),
+    new ObsoleteTagRule([{tag:"my-tag"}]),
   ]);
 
   it("will reject obsolete element", (done) => {
