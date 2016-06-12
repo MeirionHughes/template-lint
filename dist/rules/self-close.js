@@ -1,6 +1,6 @@
 "use strict";
-const rule_1 = require('./rule');
-const rule_error_1 = require('./rule-error');
+const rule_1 = require('../rule');
+const rule_error_1 = require('../rule-error');
 /**
  * Rule to ensure non-void elements do not self-close
  */

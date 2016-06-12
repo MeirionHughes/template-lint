@@ -6,10 +6,10 @@ export * from './parse-node';
 export * from './rule';
 export * from './rule-error';
 
-export * from './self-close';
-export * from './parser';
-export * from './obsolete-tag';
-export * from './obsolete-attribute';
+export * from './rules/self-close';
+export * from './rules/parser';
+export * from './rules/obsolete-tag';
+export * from './rules/obsolete-attribute';
 
 "use strict";
 
