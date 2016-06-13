@@ -11,6 +11,7 @@ __export(require('./rules/self-close'));
 __export(require('./rules/parser'));
 __export(require('./rules/obsolete-tag'));
 __export(require('./rules/obsolete-attribute'));
+__export(require('./rules/unique-id'));
 "use strict";
 const index_1 = require('./index');
 const index_2 = require('./index');
