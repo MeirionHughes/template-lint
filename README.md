@@ -34,6 +34,18 @@ There are currently four rules bundled with this package:
 ##Usage
 
 For use with gulp, [there is a gulp plugin available](https://github.com/MeirionHughes/gulp-template-lint)
+
+##Compiling
+Clone the repository. 
+In the project root run
+```
+npm install
+npm test
+```
+
+##VS-Code
+
+Once installed, you can use make use of VS-Code launcher (`ctrl + f5`). Also allows you to place breakpoints on ts spec files (currently only for those files in `outDir` path in `launch.json`
   
 ##Icon
 
