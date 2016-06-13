@@ -9,7 +9,7 @@ class ParserRule extends rule_1.Rule {
         this.parseState = parseState;
     }
     finalise() {
-        return this.parseState.errors;
+        return this.parseState.issues;
     }
 }
 exports.ParserRule = ParserRule;

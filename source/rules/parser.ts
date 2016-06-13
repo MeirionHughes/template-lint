@@ -3,7 +3,7 @@
 import {SAXParser} from 'parse5';
 import {Rule} from '../rule';
 import {ParseState} from '../parse-state';
-import {RuleError} from '../rule-error';
+import {Issue} from '../issue';
 
 /**
  * Rule to ensure tags are properly closed. 
@@ -16,7 +16,7 @@ export class ParserRule extends Rule {
         this.parseState = parseState;
     }
 
-    finalise(): RuleError[] {
-        return this.parseState.errors;
+    finalise(): Issue[] {
+        return this.parseState.issues;
     }
 }

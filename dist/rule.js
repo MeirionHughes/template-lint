@@ -4,19 +4,19 @@
 */
 class Rule {
     constructor() {
-        this.errors = [];
+        this.issues = [];
     }
-    reportError(error) {
-        if (error) {
-            this.errors.push(error);
+    reportIssue(issue) {
+        if (issue) {
+            this.issues.push(issue);
         }
     }
     init(parser, parseState) {
     }
     finalise() {
-        let errors = this.errors;
-        this.errors = [];
-        return errors;
+        let issues = this.issues;
+        this.issues = [];
+        return issues;
     }
 }
 exports.Rule = Rule;

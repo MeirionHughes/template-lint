@@ -1,30 +1,29 @@
 import {SAXParser} from 'parse5';
 import {ParseState} from './parse-state';
-import {RuleError} from './rule-error';
+import {Issue} from './issue';
 
 /**
 * Abstract Lint Rule 
 */
 export abstract class Rule {
-    private errors: RuleError[];
-    
-    constructor()
-    {
-        this.errors = [];
+    private issues: Issue[];
+
+    constructor() {
+        this.issues = [];
     }
-        
-    protected reportError(error: RuleError) {
-        if (error){
-            this.errors.push(error);
+
+    protected reportIssue(issue: Issue) {
+        if (issue) {
+            this.issues.push(issue);
         }
     }
-    
+
     init(parser: SAXParser, parseState: ParseState) {
     }
 
-    finalise(): RuleError[] {
-        let errors = this.errors;
-        this.errors = [];
-        return errors;        
+    finalise(): Issue[] {
+        let issues = this.issues;
+        this.issues = [];
+        return issues;
     }
 }

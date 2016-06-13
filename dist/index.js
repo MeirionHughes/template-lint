@@ -6,7 +6,7 @@ __export(require('./linter'));
 __export(require('./parse-state'));
 __export(require('./parse-node'));
 __export(require('./rule'));
-__export(require('./rule-error'));
+__export(require('./issue'));
 __export(require('./rules/self-close'));
 __export(require('./rules/parser'));
 __export(require('./rules/obsolete-tag'));

@@ -1,6 +1,6 @@
 "use strict";
 const rule_1 = require('../rule');
-const rule_error_1 = require('../rule-error');
+const issue_1 = require('../issue');
 /**
  * Rule to ensure tags are properly closed.
  */
@@ -17,9 +17,14 @@ class ObsoleteAttributeRule extends rule_1.Rule {
                 if (obsoleteIndex >= 0) {
                     var entry = this.obsoletes[obsoleteIndex];
                     if (entry.tag == null || entry.tag == "" || entry.tag == tag) {
-                        let str = `${entry.attr} attribute is obsolete`;
-                        let error = new rule_error_1.RuleError(str, loc.line, loc.col, entry.msg);
-                        this.reportError(error);
+                        let issue = new issue_1.Issue({
+                            message: `${entry.attr} attribute is obsolete`,
+                            severity: issue_1.IssueSeverity.Error,
+                            line: loc.line,
+                            column: loc.col,
+                            detail: entry.msg,
+                        });
+                        this.reportIssue(issue);
                     }
                 }
             });

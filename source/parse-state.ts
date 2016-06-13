@@ -1,7 +1,7 @@
 import {SAXParser, StartTagLocationInfo} from 'parse5';
 import * as parse5 from 'parse5';
 import {ParseNode} from './parse-node';
-import {RuleError} from './rule-error';
+import {Issue, IssueSeverity} from './issue';
 
 /**
  *  Helper to maintain the current state of open tags  
@@ -11,7 +11,7 @@ export class ParseState {
     private voids: string[];
 
     public stack: ParseNode[];
-    public errors: RuleError[];
+    public issues: Issue[];
 
     public scope: string;
     public nextScope: string;
@@ -32,7 +32,7 @@ export class ParseState {
 
     initPreRules(parser: SAXParser) {
         this.stack = [];
-        this.errors = [];
+        this.issues = [];
 
         var self = this;
         var stack = this.stack;
@@ -59,8 +59,13 @@ export class ParseState {
         parser.on("endTag", (name, location) => {
 
             if (stack.length <= 0 || stack[stack.length - 1].name != name) {
-                let error = new RuleError("mismatched close tag", location.line, location.col);
-                self.errors.push(error);
+                let issue = new Issue({
+                    message: "mismatched close tag",
+                    line: location.line,
+                    column: location.col,
+                    severity: IssueSeverity.Error
+                });
+                self.issues.push(issue);
             }
             else {
                 stack.pop();
@@ -90,13 +95,16 @@ export class ParseState {
 
     finalise() {
         let stack = this.stack;
-        let errors = this.errors;
+
         if (stack.length > 0) {
             let element = stack[stack.length - 1]
-            let error = new RuleError("suspected unclosed element detected",
-                element.location.line,
-                element.location.col);
-            errors.push(error);
+            let issue = new Issue({
+                message: "suspected unclosed element detected",
+                severity: IssueSeverity.Error,
+                line: element.location.line,
+                column: element.location.col,
+            });
+            this.issues.push(issue);
         }
     }
 

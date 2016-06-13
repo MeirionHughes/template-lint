@@ -3,7 +3,7 @@
 import {SAXParser} from 'parse5';
 import {Rule} from '../rule';
 import {ParseState} from '../parse-state';
-import {RuleError} from '../rule-error';
+import {Issue, IssueSeverity} from '../issue';
 
 /**
  * Rule to ensure non-void elements do not self-close
@@ -14,8 +14,8 @@ export class SelfCloseRule extends Rule {
 
         var self = this;
 
-        parser.on('startTag', (name, attrs, selfClosing, location) => {
-           
+        parser.on('startTag', (name, attrs, selfClosing, loc) => {
+
             let scope = parseState.scope;
 
             if (scope == 'svg' || scope == 'math') {
@@ -23,7 +23,14 @@ export class SelfCloseRule extends Rule {
             }
 
             if (selfClosing && parseState.isVoid(name) == false) {
-                self.reportError(new RuleError("self-closing element", location.line, location.col))
+
+                let issue = new Issue({
+                    message: "self-closing element",
+                    severity: IssueSeverity.Error,
+                    line: loc.line,
+                    column: loc.col
+                });
+                this.reportIssue(issue);
             }
         });
     }

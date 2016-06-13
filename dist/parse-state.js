@@ -1,6 +1,6 @@
 "use strict";
 const parse_node_1 = require('./parse-node');
-const rule_error_1 = require('./rule-error');
+const issue_1 = require('./issue');
 /**
  *  Helper to maintain the current state of open tags
  */
@@ -17,7 +17,7 @@ class ParseState {
     }
     initPreRules(parser) {
         this.stack = [];
-        this.errors = [];
+        this.issues = [];
         var self = this;
         var stack = this.stack;
         parser.on("startTag", (name, attrs, selfClosing, location) => {
@@ -36,8 +36,13 @@ class ParseState {
         });
         parser.on("endTag", (name, location) => {
             if (stack.length <= 0 || stack[stack.length - 1].name != name) {
-                let error = new rule_error_1.RuleError("mismatched close tag", location.line, location.col);
-                self.errors.push(error);
+                let issue = new issue_1.Issue({
+                    message: "mismatched close tag",
+                    line: location.line,
+                    column: location.col,
+                    severity: issue_1.IssueSeverity.Error
+                });
+                self.issues.push(issue);
             }
             else {
                 stack.pop();
@@ -63,11 +68,15 @@ class ParseState {
     }
     finalise() {
         let stack = this.stack;
-        let errors = this.errors;
         if (stack.length > 0) {
             let element = stack[stack.length - 1];
-            let error = new rule_error_1.RuleError("suspected unclosed element detected", element.location.line, element.location.col);
-            errors.push(error);
+            let issue = new issue_1.Issue({
+                message: "suspected unclosed element detected",
+                severity: issue_1.IssueSeverity.Error,
+                line: element.location.line,
+                column: element.location.col,
+            });
+            this.issues.push(issue);
         }
     }
     isVoid(name) {

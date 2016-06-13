@@ -5,25 +5,25 @@ import * as parse5 from 'parse5';
 import {Readable} from 'stream';
 import {Rule} from './rule';
 import {ParseState} from './parse-state';
-import {RuleError} from './rule-error';
+import {Issue} from './issue';
 
 export class Linter {
 
     private rules: Array<Rule>;
-    private scopes:string[];
-    private voids:string[];
+    private scopes: string[];
+    private voids: string[];
 
-    constructor(rules: Rule[], scopes?:string[], voids?:string[]) {
+    constructor(rules: Rule[], scopes?: string[], voids?: string[]) {
         if (!rules)
-           rules = [];
-           
+            rules = [];
+
         this.rules = rules;
         this.scopes = scopes;
         this.voids = voids;
     }
 
-    lint(html: string): Promise<RuleError[]> {
-        
+    lint(html: string): Promise<Issue[]> {
+
         var parser: SAXParser = new SAXParser({ locationInfo: true });
         var parseState: ParseState = new ParseState(this.scopes, this.voids);
         var stream: Readable = new Readable();
@@ -61,7 +61,7 @@ export class Linter {
 
         return Promise.all(ruleTasks).then(results => {
 
-            var all = new Array<RuleError>();
+            var all = new Array<Issue>();
 
             results.forEach(parts => {
                 all = all.concat(parts);

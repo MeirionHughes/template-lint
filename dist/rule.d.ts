@@ -1,13 +1,13 @@
 import { SAXParser } from 'parse5';
 import { ParseState } from './parse-state';
-import { RuleError } from './rule-error';
+import { Issue } from './issue';
 /**
 * Abstract Lint Rule
 */
 export declare abstract class Rule {
-    private errors;
+    private issues;
     constructor();
-    protected reportError(error: RuleError): void;
+    protected reportIssue(issue: Issue): void;
     init(parser: SAXParser, parseState: ParseState): void;
-    finalise(): RuleError[];
+    finalise(): Issue[];
 }

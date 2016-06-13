@@ -3,7 +3,7 @@
 import {SAXParser} from 'parse5';
 import {Rule} from '../rule';
 import {ParseState} from '../parse-state';
-import {RuleError} from '../rule-error';
+import {Issue, IssueSeverity} from '../issue';
 
 /**
  * Rule to ensure tags are properly closed. 
@@ -11,11 +11,11 @@ import {RuleError} from '../rule-error';
 export class ObsoleteAttributeRule extends Rule {
     private parseState: ParseState;
 
-    private obsoletes: Array<{attr: string, tag?: string, msg?:string }>
+    private obsoletes: Array<{ attr: string, tag?: string, msg?: string }>
 
-    constructor(obsolete?: Array<{attr: string, tag?: string, msg?:string }>) {
+    constructor(obsolete?: Array<{ attr: string, tag?: string, msg?: string }>) {
         super();
-        
+
         this.obsoletes = obsolete;
     }
 
@@ -31,9 +31,14 @@ export class ObsoleteAttributeRule extends Rule {
                     var entry = this.obsoletes[obsoleteIndex];
 
                     if (entry.tag == null || entry.tag == "" || entry.tag == tag) {
-                        let str = `${entry.attr} attribute is obsolete`;
-                        let error = new RuleError(str, loc.line, loc.col, entry.msg);
-                        this.reportError(error);
+                        let issue = new Issue({
+                            message: `${entry.attr} attribute is obsolete`,
+                            severity: IssueSeverity.Error,
+                            line: loc.line,
+                            column: loc.col,
+                            detail: entry.msg,
+                        });
+                        this.reportIssue(issue);
                     }
                 }
             });
