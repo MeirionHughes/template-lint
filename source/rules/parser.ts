@@ -11,11 +11,9 @@ import {Issue} from '../issue';
 export class ParserRule extends Rule {
     private parseState: ParseState;
 
-    init(parser: SAXParser, parseState: ParseState) {
-        super.init(parser, parseState);
+    init(parser: SAXParser, parseState: ParseState) {        
         this.parseState = parseState;
-    }
-
+    }    
     finalise(): Issue[] {
         return this.parseState.issues;
     }

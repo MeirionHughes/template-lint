@@ -6,8 +6,6 @@ const issue_1 = require('../issue');
  */
 class SelfCloseRule extends rule_1.Rule {
     init(parser, parseState) {
-        super.init(parser, parseState);
-        var self = this;
         parser.on('startTag', (name, attrs, selfClosing, loc) => {
             let scope = parseState.scope;
             if (scope == 'svg' || scope == 'math') {

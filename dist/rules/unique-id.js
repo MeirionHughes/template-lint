@@ -3,7 +3,6 @@ const rule_1 = require('../rule');
 const issue_1 = require('../issue');
 class UniqueIdRule extends rule_1.Rule {
     init(parser, parseState) {
-        super.init(parser, parseState);
         this.ids = [];
         parser.on('startTag', (name, attrs, selfClosing, loc) => {
             let idAttr = attrs.find(x => x.name == "id");
@@ -39,10 +38,6 @@ class UniqueIdRule extends rule_1.Rule {
             }
             this.ids.push(id);
         });
-    }
-    finalise() {
-        this.ids = [];
-        return super.finalise();
     }
 }
 exports.UniqueIdRule = UniqueIdRule;

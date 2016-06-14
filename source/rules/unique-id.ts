@@ -6,11 +6,9 @@ import {ParseState} from '../parse-state';
 import {Issue, IssueSeverity} from '../issue'
 
 export class UniqueIdRule extends Rule {
-
     private ids:string[];
 
-    init(parser: SAXParser, parseState: ParseState) {
-        super.init(parser, parseState);
+    init(parser: SAXParser, parseState: ParseState) {       
         
         this.ids = [];
 
@@ -53,10 +51,5 @@ export class UniqueIdRule extends Rule {
 
             this.ids.push(id);
         });
-    }
-
-    finalise(): Issue[] {
-        this.ids = [];
-        return super.finalise();
     }
 }

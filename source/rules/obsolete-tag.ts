@@ -20,14 +20,8 @@ export class ObsoleteTagRule extends Rule {
     }
 
     init(parser: SAXParser, parseState: ParseState) {
-        super.init(parser, parseState);
-
-
-        parser.on("startTag", (tag, attrs, selfClosing, loc) => {
-
-            var result = this.obsoletes.find(x => x.tag == tag);
-
-            if (result) {
+        parser.on("startTag", (tag, attrs, selfClosing, loc) => {            
+            if (this.obsoletes.find(x => x.tag == tag)) {
                 let issue = new Issue({
                     message: `<${tag}> is obsolete`,
                     severity: IssueSeverity.Error,

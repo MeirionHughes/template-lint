@@ -10,10 +10,8 @@ class ObsoleteTagRule extends rule_1.Rule {
         this.obsoletes = obsolete ? obsolete : [];
     }
     init(parser, parseState) {
-        super.init(parser, parseState);
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
-            var result = this.obsoletes.find(x => x.tag == tag);
-            if (result) {
+            if (this.obsoletes.find(x => x.tag == tag)) {
                 let issue = new issue_1.Issue({
                     message: `<${tag}> is obsolete`,
                     severity: issue_1.IssueSeverity.Error,

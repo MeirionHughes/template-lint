@@ -12,18 +12,28 @@ export abstract class Rule {
         this.issues = [];
     }
 
+    /**
+    * Initialise the Rule and hook into the parser. 
+    */
+    public abstract init(parser: SAXParser, parseState: ParseState);
+
+
+    /**
+    * Called by the parser to gather any reported issues
+    * (if you override this, ensure you `return super.finalise()`)
+    */
+    public finalise(): Issue[] {
+        let issues = this.issues;
+        this.issues = [];
+        return issues;
+    }
+
+    /**
+    * Save and issue that will be returned from the linter
+    */
     protected reportIssue(issue: Issue) {
         if (issue) {
             this.issues.push(issue);
         }
-    }
-
-    init(parser: SAXParser, parseState: ParseState) {
-    }
-
-    finalise(): Issue[] {
-        let issues = this.issues;
-        this.issues = [];
-        return issues;
     }
 }

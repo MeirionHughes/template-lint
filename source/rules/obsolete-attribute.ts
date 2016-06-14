@@ -9,8 +9,6 @@ import {Issue, IssueSeverity} from '../issue';
  * Rule to ensure tags are properly closed. 
  */
 export class ObsoleteAttributeRule extends Rule {
-    private parseState: ParseState;
-
     private obsoletes: Array<{ attr: string, tag?: string, msg?: string }>
 
     constructor(obsolete?: Array<{ attr: string, tag?: string, msg?: string }>) {
@@ -20,13 +18,10 @@ export class ObsoleteAttributeRule extends Rule {
     }
 
     init(parser: SAXParser, parseState: ParseState) {
-        super.init(parser, parseState);
 
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
             attrs.forEach(attr => {
-
                 var obsoleteIndex = this.obsoletes.findIndex((x) => x.attr == attr.name);
-
                 if (obsoleteIndex >= 0) {
                     var entry = this.obsoletes[obsoleteIndex];
 

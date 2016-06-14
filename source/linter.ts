@@ -38,7 +38,6 @@ export class Linter {
 
         parseState.initPostRules(parser);
 
-
         stream.push(html);
         stream.push(null);
         var work = stream.pipe(parser);

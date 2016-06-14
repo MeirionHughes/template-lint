@@ -10,10 +10,6 @@ import {Issue, IssueSeverity} from '../issue';
  */
 export class SelfCloseRule extends Rule {
     init(parser: SAXParser, parseState: ParseState) {
-        super.init(parser, parseState);
-
-        var self = this;
-
         parser.on('startTag', (name, attrs, selfClosing, loc) => {
 
             let scope = parseState.scope;

@@ -5,7 +5,6 @@ const rule_1 = require('../rule');
  */
 class ParserRule extends rule_1.Rule {
     init(parser, parseState) {
-        super.init(parser, parseState);
         this.parseState = parseState;
     }
     finalise() {

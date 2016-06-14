@@ -10,7 +10,6 @@ class ObsoleteAttributeRule extends rule_1.Rule {
         this.obsoletes = obsolete;
     }
     init(parser, parseState) {
-        super.init(parser, parseState);
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
             attrs.forEach(attr => {
                 var obsoleteIndex = this.obsoletes.findIndex((x) => x.attr == attr.name);

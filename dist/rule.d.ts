@@ -7,7 +7,17 @@ import { Issue } from './issue';
 export declare abstract class Rule {
     private issues;
     constructor();
-    protected reportIssue(issue: Issue): void;
-    init(parser: SAXParser, parseState: ParseState): void;
+    /**
+    * Initialise the Rule and hook into the parser.
+    */
+    abstract init(parser: SAXParser, parseState: ParseState): any;
+    /**
+    * Called by the parser to gather any reported issues
+    * (if you override this, ensure you `return super.finalise()`)
+    */
     finalise(): Issue[];
+    /**
+    * Save and issue that will be returned from the linter
+    */
+    protected reportIssue(issue: Issue): void;
 }

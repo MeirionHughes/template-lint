@@ -5,7 +5,6 @@ import { ParseState } from '../parse-state';
  * Rule to ensure tags are properly closed.
  */
 export declare class ObsoleteAttributeRule extends Rule {
-    private parseState;
     private obsoletes;
     constructor(obsolete?: Array<{
         attr: string;
