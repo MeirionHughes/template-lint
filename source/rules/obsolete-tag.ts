@@ -21,12 +21,14 @@ export class ObsoleteTagRule extends Rule {
 
     init(parser: SAXParser, parseState: ParseState) {
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {            
-            if (this.obsoletes.find(x => x.tag == tag)) {
+            var obsolete = this.obsoletes.find(x => x.tag == tag);
+            if (obsolete) {
                 let issue = new Issue({
                     message: `<${tag}> is obsolete`,
                     severity: IssueSeverity.Error,
                     line: loc.line,
-                    column: loc.col,
+                    column: loc.col, 
+                    detail: obsolete.msg || "",             
                 });
                 this.reportIssue(issue);
             }
