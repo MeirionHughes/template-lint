@@ -52,7 +52,7 @@ export class ParseState {
                     nextScope = name;
 
                 self.nextScope = nextScope;
-                self.nextStack = new ParseNode(currentScope, name, location);
+                self.nextStack = new ParseNode(currentScope, name, attrs, location);
             }
         });
 
