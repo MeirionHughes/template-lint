@@ -7,6 +7,9 @@ Sanity check of template HTML.
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][npm-downloads]][npm-url]
 [![Travis Status][travis-image]][travis-url]
+[![Breaks-on][breaks-image]][npm-url]
+[![Stability][stability-image]][npm-url]
+[![Gitter][gitter-image]][gitter-url]
 
 ##Info
 This project was the result of wondering why aurelia applications had missing content when you used self-closing tags. In the end it turns out if your template html is ill formed, the browser parser will not complain and you will simply have missing content and/or an ill formed DOM element tree. 
@@ -56,3 +59,7 @@ Icon courtesy of [The Noun Project](https://thenounproject.com/)
 [npm-downloads]: http://img.shields.io/npm/dm/template-lint.svg
 [travis-url]: https://travis-ci.org/MeirionHughes/template-lint
 [travis-image]: https://img.shields.io/travis/MeirionHughes/template-lint/master.svg
+[breaks-image]: https://img.shields.io/badge/breaks--on-minor-yellow.svg
+[stability-image]: https://img.shields.io/badge/stability-2%20%3A%20unstable-red.svg
+[gitter-image]: https://img.shields.io/gitter/room/MeirionHughes/template-lint.svg
+[gitter-url]:https://gitter.im/MeirionHughes/template-lint
