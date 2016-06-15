@@ -11,12 +11,14 @@ export declare class AttributeValueRule extends Rule {
         is?: RegExp;
         not?: RegExp;
         msg?: string;
+        tag?: string;
     }>;
     constructor(patterns?: Array<{
         attr: RegExp;
         is?: RegExp;
         not?: RegExp;
         msg?: string;
+        tag?: string;
     }>);
     init(parser: SAXParser, parseState: ParseState): void;
 }

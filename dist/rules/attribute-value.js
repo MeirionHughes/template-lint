@@ -13,12 +13,14 @@ class AttributeValueRule extends rule_1.Rule {
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
             attrs.forEach(attr => {
                 var pattern = this.patterns.find(x => {
-                    var matches = attr.name.match(x.attr);
-                    return matches != null;
+                    if (x.tag && x.tag != tag)
+                        return false;
+                    return matches != attr.name.match(x.attr);
                 });
                 if (pattern) {
+                    var matches;
                     if (pattern.is != null) {
-                        var matches = attr.value.match(pattern.is);
+                        matches = attr.value.match(pattern.is);
                         if (matches == null || matches[0] != attr.value) {
                             let issue = new issue_1.Issue({
                                 message: pattern.msg || `attribute value doesn't match expected pattern`,
@@ -30,7 +32,7 @@ class AttributeValueRule extends rule_1.Rule {
                         }
                     }
                     else if (pattern.not != null) {
-                        var matches = attr.value.match(pattern.not);
+                        matches = attr.value.match(pattern.not);
                         if (matches != null) {
                             let issue = new issue_1.Issue({
                                 message: pattern.msg || `attribute value matched a disallowed pattern`,

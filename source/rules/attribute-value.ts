@@ -11,9 +11,9 @@ import {Issue, IssueSeverity} from '../issue';
 export class AttributeValueRule extends Rule {
     private parseState: ParseState;
 
-    patterns: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string }>
+    patterns: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string, tag?:string }>
 
-    constructor(patterns?: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string }>) {
+    constructor(patterns?: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string, tag?:string }>) {
         super();
 
         this.patterns = patterns ? patterns : []
@@ -24,13 +24,16 @@ export class AttributeValueRule extends Rule {
 
             attrs.forEach(attr => {
                 var pattern = this.patterns.find(x => {
-                    var matches = attr.name.match(x.attr);
-                    return matches != null;
+                    if(x.tag && x.tag != tag)
+                        return false;
+
+                    return matches != attr.name.match(x.attr); 
                 });
 
                 if (pattern) {
+                    var matches;
                     if (pattern.is != null) {
-                        var matches = attr.value.match(pattern.is);
+                        matches = attr.value.match(pattern.is);
                         if (matches == null || matches[0] != attr.value) {
                             let issue = new Issue({
                                 message: pattern.msg || `attribute value doesn't match expected pattern`,
@@ -41,7 +44,7 @@ export class AttributeValueRule extends Rule {
                             this.reportIssue(issue);
                         }
                     } else if (pattern.not != null) {
-                        var matches = attr.value.match(pattern.not);
+                        matches = attr.value.match(pattern.not);
                         if (matches != null) {
                             let issue = new Issue({
                                 message: pattern.msg || `attribute value matched a disallowed pattern`,
