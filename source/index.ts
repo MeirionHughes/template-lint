@@ -11,13 +11,16 @@ export * from './rules/parser';
 export * from './rules/obsolete-tag';
 export * from './rules/obsolete-attribute';
 export * from './rules/unique-id';
+export * from './rules/attribute-value';
 
 "use strict";
 
-import {SelfCloseRule} from './index'
-import {ParserRule} from './index'
+import {SelfCloseRule} from './rules/self-close'
+import {ParserRule} from './rules/parser'
+import {UniqueIdRule} from './rules/unique-id'
 
 export var DefaultRules = [
     new SelfCloseRule(),
-    new ParserRule()
+    new ParserRule(),
+    new UniqueIdRule()
 ]
