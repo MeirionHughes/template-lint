@@ -8,5 +8,6 @@ export * from './rules/parser';
 export * from './rules/obsolete-tag';
 export * from './rules/obsolete-attribute';
 export * from './rules/unique-id';
-import { SelfCloseRule } from './index';
+export * from './rules/attribute-value';
+import { SelfCloseRule } from './rules/self-close';
 export declare var DefaultRules: SelfCloseRule[];
