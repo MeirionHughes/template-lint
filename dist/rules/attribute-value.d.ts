@@ -7,12 +7,16 @@ import { ParseState } from '../parse-state';
 export declare class AttributeValueRule extends Rule {
     private parseState;
     patterns: Array<{
-        attr: string;
-        exp: RegExp;
+        attr: RegExp;
+        is?: RegExp;
+        not?: RegExp;
+        msg?: string;
     }>;
     constructor(patterns?: Array<{
-        attr: string;
-        exp: RegExp;
+        attr: RegExp;
+        is?: RegExp;
+        not?: RegExp;
+        msg?: string;
     }>);
     init(parser: SAXParser, parseState: ParseState): void;
 }

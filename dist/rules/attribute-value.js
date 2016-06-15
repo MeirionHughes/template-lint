@@ -12,20 +12,45 @@ class AttributeValueRule extends rule_1.Rule {
     init(parser, parseState) {
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
             attrs.forEach(attr => {
-                var pattern = this.patterns.find(x => x.attr == attr.name);
+                var pattern = this.patterns.find(x => {
+                    var matches = attr.name.match(x.attr);
+                    return matches != null;
+                });
                 if (pattern) {
-                    var result = attr.value.match(pattern.exp);
-                    var attrLen = attr.value.length;
-                    if (result == null ||
-                        result.length > 1 ||
-                        result[0].length != attrLen) {
-                        let issue = new issue_1.Issue({
-                            message: `attribute value doesn't match expected pattern`,
-                            severity: issue_1.IssueSeverity.Error,
-                            line: loc.line,
-                            column: loc.col
-                        });
-                        this.reportIssue(issue);
+                    if (pattern.is != null) {
+                        var matches = attr.value.match(pattern.is);
+                        if (matches == null || matches[0] != attr.value) {
+                            let issue = new issue_1.Issue({
+                                message: pattern.msg || `attribute value doesn't match expected pattern`,
+                                severity: issue_1.IssueSeverity.Error,
+                                line: loc.line,
+                                column: loc.col,
+                            });
+                            this.reportIssue(issue);
+                        }
+                    }
+                    else if (pattern.not != null) {
+                        var matches = attr.value.match(pattern.not);
+                        if (matches != null) {
+                            let issue = new issue_1.Issue({
+                                message: pattern.msg || `attribute value matched a disallowed pattern`,
+                                severity: issue_1.IssueSeverity.Error,
+                                line: loc.line,
+                                column: loc.col
+                            });
+                            this.reportIssue(issue);
+                        }
+                    }
+                    else {
+                        if (attr.value != "") {
+                            let issue = new issue_1.Issue({
+                                message: pattern.msg || `attribute should not have a value`,
+                                severity: issue_1.IssueSeverity.Error,
+                                line: loc.line,
+                                column: loc.col
+                            });
+                            this.reportIssue(issue);
+                        }
                     }
                 }
             });

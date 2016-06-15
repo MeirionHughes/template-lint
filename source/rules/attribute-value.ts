@@ -11,9 +11,9 @@ import {Issue, IssueSeverity} from '../issue';
 export class AttributeValueRule extends Rule {
     private parseState: ParseState;
 
-    patterns: Array<{ attr: string, exp: RegExp }>
+    patterns: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string }>
 
-    constructor(patterns?: Array<{ attr: string, exp: RegExp }>) {
+    constructor(patterns?: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string }>) {
         super();
 
         this.patterns = patterns ? patterns : []
@@ -23,23 +23,44 @@ export class AttributeValueRule extends Rule {
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
 
             attrs.forEach(attr => {
-                var pattern = this.patterns.find(x => x.attr == attr.name);
+                var pattern = this.patterns.find(x => {
+                    var matches = attr.name.match(x.attr);
+                    return matches != null;
+                });
 
                 if (pattern) {
-                    var result = attr.value.match(pattern.exp);
-                    var attrLen = attr.value.length;
-
-                    if (result == null ||
-                        result.length > 1 ||
-                        result[0].length != attrLen) {
-                        let issue = new Issue({
-                            message: `attribute value doesn't match expected pattern`,
-                            severity: IssueSeverity.Error,
-                            line: loc.line,
-                            column: loc.col
-                        });
-                        this.reportIssue(issue);
-
+                    if (pattern.is != null) {
+                        var matches = attr.value.match(pattern.is);
+                        if (matches == null || matches[0] != attr.value) {
+                            let issue = new Issue({
+                                message: pattern.msg || `attribute value doesn't match expected pattern`,
+                                severity: IssueSeverity.Error,
+                                line: loc.line,
+                                column: loc.col,                              
+                            });
+                            this.reportIssue(issue);
+                        }
+                    } else if (pattern.not != null) {
+                        var matches = attr.value.match(pattern.not);
+                        if (matches != null) {
+                            let issue = new Issue({
+                                message: pattern.msg || `attribute value matched a disallowed pattern`,
+                                severity: IssueSeverity.Error,
+                                line: loc.line,
+                                column: loc.col
+                            });
+                            this.reportIssue(issue);
+                        }
+                    } else /* no value expected */ {
+                        if (attr.value != "") {
+                            let issue = new Issue({
+                                message: pattern.msg || `attribute should not have a value`,
+                                severity: IssueSeverity.Error,
+                                line: loc.line,
+                                column: loc.col
+                            });
+                            this.reportIssue(issue);
+                        }
                     }
                 }
             });
