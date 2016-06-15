@@ -1,5 +1,7 @@
 # template-lint
 
+[![Join the chat at https://gitter.im/MeirionHughes/template-lint](https://badges.gitter.im/MeirionHughes/template-lint.svg)](https://gitter.im/MeirionHughes/template-lint?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![logo](https://d30y9cdsu7xlg0.cloudfront.net/png/30843-200.png)
 
 Sanity check of template HTML. 
