@@ -11,12 +11,14 @@ class ObsoleteTagRule extends rule_1.Rule {
     }
     init(parser, parseState) {
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
-            if (this.obsoletes.find(x => x.tag == tag)) {
+            var obsolete = this.obsoletes.find(x => x.tag == tag);
+            if (obsolete) {
                 let issue = new issue_1.Issue({
                     message: `<${tag}> is obsolete`,
                     severity: issue_1.IssueSeverity.Error,
                     line: loc.line,
                     column: loc.col,
+                    detail: obsolete.msg || "",
                 });
                 this.reportIssue(issue);
             }
