@@ -31,7 +31,7 @@ class ParseState {
                 if (self.isScope(name))
                     nextScope = name;
                 self.nextScope = nextScope;
-                self.nextStack = new parse_node_1.ParseNode(currentScope, name, location);
+                self.nextStack = new parse_node_1.ParseNode(currentScope, name, attrs, location);
             }
         });
         parser.on("endTag", (name, location) => {

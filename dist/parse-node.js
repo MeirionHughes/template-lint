@@ -3,9 +3,10 @@
  *  Node in traversal stack
  */
 class ParseNode {
-    constructor(scope, name, location) {
+    constructor(scope, name, attrs, location) {
         this.scope = scope;
         this.name = name;
+        this.attrs = attrs;
         this.location = location;
     }
 }
