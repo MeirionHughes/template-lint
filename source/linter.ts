@@ -2,7 +2,7 @@
 
 import {SAXParser, StartTagLocationInfo} from 'parse5';
 import * as parse5 from 'parse5';
-import {Readable} from 'stream';
+import {Readable, Stream} from 'stream';
 import {Rule} from './rule';
 import {ParseState} from './parse-state';
 import {Issue} from './issue';
@@ -22,12 +22,11 @@ export class Linter {
         this.voids = voids;
     }
 
-    lint(html: string): Promise<Issue[]> {
+    lint(html: string|Stream): Promise<Issue[]> {
 
         var parser: SAXParser = new SAXParser({ locationInfo: true });
         var parseState: ParseState = new ParseState(this.scopes, this.voids);
-        var stream: Readable = new Readable();
-
+        
         parseState.initPreRules(parser);
 
         let rules = this.rules;
@@ -38,9 +37,21 @@ export class Linter {
 
         parseState.initPostRules(parser);
 
-        stream.push(html);
-        stream.push(null);
-        var work = stream.pipe(parser);
+        var work:SAXParser;
+
+        if(typeof(html) === 'string')
+        {
+            var stream: Readable = new Readable();
+            stream.push(html);
+            stream.push(null);
+            work = stream.pipe(parser);       
+        }else if((<any>html).pipe !== undefined)
+        {
+            work = (<any>html).pipe(parser);
+        }       
+        else{
+            throw new Error("html isn't pipeable");
+        }
 
         var completed = new Promise<void>(function (resolve, reject) {
             work.on("end", () => {
@@ -68,5 +79,5 @@ export class Linter {
 
             return all;
         });
-    }
+    }    
 }

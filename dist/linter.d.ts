@@ -1,3 +1,4 @@
+import { Stream } from 'stream';
 import { Rule } from './rule';
 import { Issue } from './issue';
 export declare class Linter {
@@ -5,5 +6,5 @@ export declare class Linter {
     private scopes;
     private voids;
     constructor(rules: Rule[], scopes?: string[], voids?: string[]);
-    lint(html: string): Promise<Issue[]>;
+    lint(html: string | Stream): Promise<Issue[]>;
 }

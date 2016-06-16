@@ -13,16 +13,25 @@ class Linter {
     lint(html) {
         var parser = new parse5_1.SAXParser({ locationInfo: true });
         var parseState = new parse_state_1.ParseState(this.scopes, this.voids);
-        var stream = new stream_1.Readable();
         parseState.initPreRules(parser);
         let rules = this.rules;
         rules.forEach((rule) => {
             rule.init(parser, parseState);
         });
         parseState.initPostRules(parser);
-        stream.push(html);
-        stream.push(null);
-        var work = stream.pipe(parser);
+        var work;
+        if (typeof (html) === 'string') {
+            var stream = new stream_1.Readable();
+            stream.push(html);
+            stream.push(null);
+            work = stream.pipe(parser);
+        }
+        else if (html.pipe !== undefined) {
+            work = html.pipe(parser);
+        }
+        else {
+            throw new Error("html isn't pipeable");
+        }
         var completed = new Promise(function (resolve, reject) {
             work.on("end", () => {
                 parseState.finalise();
