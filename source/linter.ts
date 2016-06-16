@@ -44,11 +44,11 @@ export class Linter {
             var stream: Readable = new Readable();
             stream.push(html);
             stream.push(null);
-            work = stream.pipe(parser);       
-        }else if((<any>html).pipe !== undefined)
+            work = stream.pipe(parser);
+        }else if(this.isStream(html))
         {
-            work = (<any>html).pipe(parser);
-        }       
+            work = html.pipe(parser);
+        }
         else{
             throw new Error("html isn't pipeable");
         }
@@ -79,5 +79,10 @@ export class Linter {
 
             return all;
         });
-    }    
+    }
+
+    private isStream(input): input is Stream {
+      return input.pipe && typeof(input.pipe) === "function";
+    }
+
 }
