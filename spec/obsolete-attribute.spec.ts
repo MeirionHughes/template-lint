@@ -1,5 +1,5 @@
 import {Linter} from '../source/linter';
-import {ObsoleteAttributeRule} from '../source/index';
+import {ObsoleteAttributeRule} from '../source/rules/obsolete-attribute';
 
 describe("ObsoleteAttribute Rule", () => {
 

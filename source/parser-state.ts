@@ -1,21 +1,21 @@
 import {SAXParser, StartTagLocationInfo} from 'parse5';
 import * as parse5 from 'parse5';
-import {ParseNode} from './parse-node';
+import {ParserNode} from './parser-node';
 import {Issue, IssueSeverity} from './issue';
 
 /**
  *  Helper to maintain the current state of open tags  
  */
-export class ParseState {
+export class ParserState {
     private scopes: string[];
     private voids: string[];
 
-    public stack: ParseNode[];
+    public stack: ParserNode[];
     public issues: Issue[];
 
     public scope: string;
     public nextScope: string;
-    public nextStack: ParseNode;
+    public nextStack: ParserNode;
 
     constructor(scopes?: string[], voids?: string[]) {
         if (scopes == null)
@@ -52,7 +52,7 @@ export class ParseState {
                     nextScope = name;
 
                 self.nextScope = nextScope;
-                self.nextStack = new ParseNode(currentScope, name, attrs, location);
+                self.nextStack = new ParserNode(currentScope, name, attrs, location);
             }
         });
 

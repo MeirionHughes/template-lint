@@ -1,25 +1,21 @@
 "use strict";
 
-import {SAXParser} from 'parse5';
 import {Rule} from '../rule';
-import {ParseState} from '../parse-state';
+import {Parser} from '../parser';
 import {Issue, IssueSeverity} from '../issue';
 
 /**
  * Rule to ensure attribute values match a pattern
  */
 export class AttributeValueRule extends Rule {
-    private parseState: ParseState;
-
     patterns: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string, tag?:string }>
 
     constructor(patterns?: Array<{ attr: RegExp, is?: RegExp, not?: RegExp, msg?: string, tag?:string }>) {
         super();
-
         this.patterns = patterns ? patterns : []
     }
 
-    init(parser: SAXParser, parseState: ParseState) {
+    init(parser: Parser) {
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
 
             attrs.forEach(attr => {

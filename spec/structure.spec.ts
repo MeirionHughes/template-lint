@@ -1,10 +1,10 @@
 import {Linter} from '../source/linter';
-import {ParserRule} from '../source/index';
+import {StructureRule} from '../source/rules/structure';
 
 describe("Parser Rule", () => {
 
   var linter: Linter = new Linter([
-    new ParserRule(),
+    new StructureRule(),
   ]);
 
   it("will reject unclosed element", (done) => {

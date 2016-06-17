@@ -1,8 +1,7 @@
 "use strict";
 
-import {SAXParser} from 'parse5';
 import {Rule} from '../rule';
-import {ParseState} from '../parse-state';
+import {Parser} from '../parser';
 import {Issue, IssueSeverity} from '../issue';
 
 /**
@@ -17,7 +16,7 @@ export class ObsoleteAttributeRule extends Rule {
         this.obsoletes = obsolete;
     }
 
-    init(parser: SAXParser, parseState: ParseState) {
+    init(parser: Parser) {
 
         parser.on("startTag", (tag, attrs, selfClosing, loc) => {
             attrs.forEach(attr => {

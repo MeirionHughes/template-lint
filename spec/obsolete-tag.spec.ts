@@ -1,5 +1,5 @@
 import {Linter} from '../source/linter';
-import {ObsoleteTagRule} from '../source/index';
+import {ObsoleteTagRule} from '../source/rules/obsolete-tag';
     
 describe("ObsoleteTag Rule", () => {
 

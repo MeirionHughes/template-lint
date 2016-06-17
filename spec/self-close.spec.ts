@@ -1,7 +1,5 @@
 import {Linter} from '../source/linter';
-import {SelfCloseRule} from '../source/index';
-import {ParserRule} from '../source/index';
-import {ObsoleteTagRule} from '../source/index';
+import {SelfCloseRule} from '../source/rules/self-close';
     
 describe("SelfClose Rule", () => {
 

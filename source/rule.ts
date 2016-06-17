@@ -1,5 +1,4 @@
-import {SAXParser} from 'parse5';
-import {ParseState} from './parse-state';
+import {Parser} from './parser';
 import {Issue} from './issue';
 
 /**
@@ -15,7 +14,7 @@ export abstract class Rule {
     /**
     * Initialise the Rule and hook into the parser. 
     */
-    public abstract init(parser: SAXParser, parseState: ParseState);
+    public abstract init(parser: Parser);
 
 
     /**

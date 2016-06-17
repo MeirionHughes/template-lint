@@ -1,10 +1,9 @@
 "use strict";
 
-import {SAXParser, StartTagLocationInfo} from 'parse5';
-import * as parse5 from 'parse5';
 import {Readable} from 'stream';
 import {Rule} from './rule';
-import {ParseState} from './parse-state';
+import {ParserState} from './parser-state';
+import {Parser} from './parser';
 import {Issue} from './issue';
 
 export class Linter {
@@ -23,9 +22,8 @@ export class Linter {
     }
 
     lint(html: string): Promise<Issue[]> {
-
-        var parser: SAXParser = new SAXParser({ locationInfo: true });
-        var parseState: ParseState = new ParseState(this.scopes, this.voids);
+        var parseState: ParserState = new ParserState(this.scopes, this.voids);
+        var parser: Parser = new Parser(parseState);                
         var stream: Readable = new Readable();
 
         parseState.initPreRules(parser);
@@ -33,7 +31,7 @@ export class Linter {
         let rules = this.rules;
 
         rules.forEach((rule) => {
-            rule.init(parser, parseState);
+            rule.init(parser);
         });
 
         parseState.initPostRules(parser);

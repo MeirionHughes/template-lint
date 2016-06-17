@@ -4,7 +4,7 @@ import {Attribute} from 'parse5';
 /**
  *  Node in traversal stack
  */
-export class ParseNode {
+export class ParserNode {
     constructor(public scope: string, public name: string, public attrs:Attribute[], public location: StartTagLocationInfo) {
     }
 }
