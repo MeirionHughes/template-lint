@@ -1,6 +1,6 @@
 "use strict";
 
-import {Readable} from 'stream';
+import {Readable, Stream} from 'stream';
 import {Rule} from './rule';
 import {ParserState} from './parser-state';
 import {Parser} from './parser';
@@ -21,11 +21,10 @@ export class Linter {
         this.voids = voids;
     }
 
-    lint(html: string): Promise<Issue[]> {
+    lint(html: string|Stream): Promise<Issue[]> {
         var parseState: ParserState = new ParserState(this.scopes, this.voids);
         var parser: Parser = new Parser(parseState);                
-        var stream: Readable = new Readable();
-
+        
         parseState.initPreRules(parser);
 
         let rules = this.rules;
@@ -36,9 +35,21 @@ export class Linter {
 
         parseState.initPostRules(parser);
 
-        stream.push(html);
-        stream.push(null);
-        var work = stream.pipe(parser);
+        var work:Parser;
+
+        if(typeof(html) === 'string')
+        {
+            var stream: Readable = new Readable();
+            stream.push(html);
+            stream.push(null);
+            work = stream.pipe(parser);
+        }else if(this.isStream(html))
+        {
+            work = html.pipe(parser);
+        }
+        else{
+            throw new Error("html isn't pipeable");
+        }
 
         var completed = new Promise<void>(function (resolve, reject) {
             work.on("end", () => {
@@ -67,4 +78,9 @@ export class Linter {
             return all;
         });
     }
+
+    private isStream(input): input is Stream {
+      return input.pipe && typeof(input.pipe) === "function";
+    }
+
 }
