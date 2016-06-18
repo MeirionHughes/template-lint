@@ -75,6 +75,8 @@ export class Linter {
                 all = all.concat(parts);
             });
 
+            all = all.sort((a,b)=> a.line - b.line);
+
             return all;
         });
     }

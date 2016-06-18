@@ -1,7 +1,7 @@
 import {Linter} from '../source/linter';
-import {SelfCloseRule} from '../source/index';
+import {SelfCloseRule} from '../source/rules/self-close';
+import {StructureRule} from '../source/rules/structure';
 import {Issue} from '../source/issue';
-
 import {Readable} from 'stream';
 
 describe("Linter", () => {
@@ -54,6 +54,30 @@ describe("Linter", () => {
     expect(error).toBeUndefined();
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
+
+    done();
+  });
+
+   it("should return issues sorted by line", async (done) => {
+    var linter: Linter = new Linter([
+      new SelfCloseRule(),
+      new StructureRule(),
+    ]);
+
+    var html = 
+    `<template>
+       <div/>    
+    </templte>`;
+
+    var result: Issue[];
+
+    result = await linter.lint(html);
+
+
+    expect(result.length).toBe(3);
+    expect(result[0].line).toBe(1);
+    expect(result[1].line).toBe(2);
+    expect(result[2].line).toBe(3);
 
     done();
   });
