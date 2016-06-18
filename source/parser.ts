@@ -4,7 +4,7 @@ import * as parse5 from 'parse5';
 import {ParserState} from './parser-state';
 
 export class Parser extends SAXParser{
-    constructor(public state:ParserState, public filepath?:string)    {
+    constructor(public state:ParserState)    {
         super({ locationInfo: true });
         this.setMaxListeners(100);
     }

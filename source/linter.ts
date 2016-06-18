@@ -21,7 +21,7 @@ export class Linter {
         this.voids = voids;
     }
 
-    lint(html: string|Stream): Promise<Issue[]> {
+    lint(html: string|Stream, path?:string): Promise<Issue[]> {
         var parseState: ParserState = new ParserState(this.scopes, this.voids);
         var parser: Parser = new Parser(parseState);                
         
@@ -30,7 +30,7 @@ export class Linter {
         let rules = this.rules;
 
         rules.forEach((rule) => {
-            rule.init(parser);
+            rule.init(parser, path);
         });
 
         parseState.initPostRules(parser);

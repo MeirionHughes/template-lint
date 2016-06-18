@@ -15,7 +15,21 @@ describe("Linter", () => {
     var result: Issue[]
 
     expect(() => linter.lint(html).then((x) => result = x)).not.toThrow();
+  });  
+  
+  it("should not throw error when given a string and file path", () => {
+    var linter: Linter = new Linter([
+      new SelfCloseRule(),
+    ]);
+
+    var html = "<template/>"
+    var path = "./some/path.html"
+
+    var result: Issue[]
+
+    expect(() => linter.lint(html, path).then((x) => result = x)).not.toThrow();
   });
+
 
   it("should not throw error when given a stream", async (done) => {
     var linter: Linter = new Linter([

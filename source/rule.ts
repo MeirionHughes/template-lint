@@ -14,7 +14,7 @@ export abstract class Rule {
     /**
     * Initialise the Rule and hook into the parser. 
     */
-    public abstract init(parser: Parser);
+    public abstract init(parser: Parser, path?:string);
 
 
     /**
