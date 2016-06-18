@@ -2,7 +2,7 @@ import {IssueSeverity} from './issue-severity';
 export {IssueSeverity} from './issue-severity';
 
 /**
-* Provide information relating to Report object
+* information about an issue
 */
 export class Issue {
 
