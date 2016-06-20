@@ -15,7 +15,7 @@ export class ParserState {
 
     public scope: string;
     public nextScope: string;
-    public nextStack: ParserNode;
+    public nextNode: ParserNode;
 
     constructor(scopes?: string[], voids?: string[]) {
         if (scopes == null)
@@ -39,7 +39,7 @@ export class ParserState {
 
         parser.on("startTag", (name, attrs, selfClosing, location) => {
             self.nextScope = null;
-            self.nextStack = null;
+            self.nextNode = null;
             if (!selfClosing && !self.isVoid(name)) {
 
                 let currentScope = self.scope;
@@ -52,7 +52,7 @@ export class ParserState {
                     nextScope = name;
 
                 self.nextScope = nextScope;
-                self.nextStack = new ParserNode(currentScope, name, attrs, location);
+                self.nextNode = new ParserNode(currentScope, name, attrs, location);
             }
         });
 
@@ -87,9 +87,9 @@ export class ParserState {
                 self.scope = self.nextScope;
             self.nextScope = null;
 
-            if (self.nextStack != null)
-                self.stack.push(self.nextStack)
-            self.nextStack = null;
+            if (self.nextNode != null)
+                self.stack.push(self.nextNode)
+            self.nextNode = null;
         });
     }
 
