@@ -34,29 +34,37 @@ export class ParserState {
         this.stack = [];
         this.issues = [];
 
-        var self = this;
         var stack = this.stack;
 
         parser.on("startTag", (name, attrs, selfClosing, location) => {
-            self.nextScope = null;
-            self.nextNode = null;
-            if (!selfClosing && !self.isVoid(name)) {
+            this.nextScope = null;
+            this.nextNode = null;   
 
-                let currentScope = self.scope;
+            if(stack.length> 0 && stack[stack.length-1].isVoid)
+                this.popStack();
+            let isVoid = this.isVoid(name);
+
+            if (!selfClosing) {
+                let currentScope = this.scope;
                 let nextScope = ""
 
                 if (stack.length > 0)
                     nextScope = stack[stack.length - 1].scope;
 
-                if (self.isScope(name))
+                if (this.isScope(name))
                     nextScope = name;
 
-                self.nextScope = nextScope;
-                self.nextNode = new ParserNode(currentScope, name, attrs, location);
+                this.nextScope = nextScope;
+                this.nextNode = new ParserNode(currentScope, name, attrs, isVoid, location);
             }
         });
 
         parser.on("endTag", (name, location) => {
+
+            if(stack.length> 0 && stack[stack.length-1].isVoid)
+                this.popStack();
+                
+            let isVoid = this.isVoid(name);
 
             if (stack.length <= 0 || stack[stack.length - 1].name != name) {
                 let issue = new Issue({
@@ -65,16 +73,10 @@ export class ParserState {
                     column: location.col,
                     severity: IssueSeverity.Error
                 });
-                self.issues.push(issue);
+                this.issues.push(issue);
             }
             else {
-                stack.pop();
-                if (stack.length > 0) {
-                    self.scope = stack[stack.length - 1].scope;
-                }
-                else {
-                    self.scope = "";
-                }
+                this.popStack();
             }
         });
     }
@@ -114,5 +116,17 @@ export class ParserState {
 
     public isScope(name: string): boolean {
         return this.scopes.indexOf(name) >= 0;
+    }
+
+    private popStack() {
+        var stack = this.stack;
+
+        stack.pop();
+        if (stack.length > 0) {
+            this.scope = stack[stack.length - 1].scope;
+        }
+        else {
+            this.scope = "";
+        }
     }
 }

@@ -6,7 +6,12 @@ import {Attribute} from 'parse5';
  */
 export class ParserNode {
     public data:any;
-    constructor(public scope: string, public name: string, public attrs:Attribute[], public location: StartTagLocationInfo) {
+    constructor(
+    public scope: string, 
+    public name: string, 
+    public attrs:Attribute[],
+    public isVoid:boolean,
+    public location: StartTagLocationInfo) {
         this.data = {};
     }
 }
