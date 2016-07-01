@@ -14,6 +14,7 @@ export * from './rules/obsolete-tag';
 export * from './rules/obsolete-attribute';
 export * from './rules/unique-id';
 export * from './rules/attribute-value';
+export * from './rules/conflicting-attributes';
 
 "use strict";
 
