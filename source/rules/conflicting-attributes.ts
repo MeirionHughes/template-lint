@@ -4,7 +4,7 @@ import {Rule} from '../rule';
 import {Parser} from '../parser';
 import {Issue, IssueSeverity} from '../issue';
 
-import {Attribute, StartTagLocationInfo} from 'parse5';
+import {ASTAttribute, StartTagLocationInfo} from 'parse5';
 
 export class ConflictingAttributes {
   constructor(public attrs: string[], public msg: string) {
@@ -36,7 +36,7 @@ export class ConflictingAttributesRule extends Rule {
     });
   }
 
-  private checkConflictsWith(attrs: Attribute[], loc: StartTagLocationInfo, conflictingAttributes: ConflictingAttributes) {
+  private checkConflictsWith(attrs: ASTAttribute[], loc: StartTagLocationInfo, conflictingAttributes: ConflictingAttributes) {
     const attributes = [];
     attrs.forEach(attr => {
       if (conflictingAttributes.attrs.indexOf(attr.name) >= 0) {

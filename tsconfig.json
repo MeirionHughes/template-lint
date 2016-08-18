@@ -1,8 +1,9 @@
 {
-    "version": "1.8.10",
+    "version": "2.0.0",
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
+        "moduleResolution": "node",
         "sourceMap": true,
         "noEmitOnError": true,
         "newLine": "LF",

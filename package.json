@@ -23,6 +23,9 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "devDependencies": {
+    "@types/jasmine": "^2.2.31",
+    "@types/node": "^6.0.34",
+    "@types/parse5": "0.0.28",
     "gulp": "^3.9.1",
     "gulp-jasmine": "^2.3.0",
     "gulp-plumber": "^1.1.0",
@@ -30,15 +33,16 @@
     "gulp-rimraf": "^0.2.0",
     "gulp-shell": "^0.5.2",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-typescript": "^2.13.4",
+    "gulp-typescript": "^2.13.5",
     "merge2": "^1.0.2",
     "run-sequence": "^1.2.1",
-    "typings": "^1.0.4"
+    "typings": "^1.0.4",
+    "typescript": "^2.0.0"
   },
   "scripts": {
     "test": "gulp test"
   },
   "dependencies": {
-    "parse5": "2.1.x"
+    "parse5": "2.2.x"
   }
 }

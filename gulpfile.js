@@ -10,6 +10,7 @@ var sourcemap = require('gulp-sourcemaps');
 var rimraf = require('gulp-rimraf');
 var replace = require('gulp-replace');
 var runsequence = require('run-sequence');
+var typescript = require('typescript');
 
 var paths = {
     source : "source/",
@@ -31,14 +32,10 @@ gulp.task('clean', ['clean:tests','clean:typescript'], function() {
 });
 
 gulp.task('compile:typescript', ['clean:typescript'], function () {
-    var project = ts.createProject('tsconfig.json');
+    var project = ts.createProject('tsconfig.json', {typescript:typescript});
 
     var tsResult = gulp        
-        .src([
-            '!' + paths.source + '**/*spec.ts',
-            paths.source + '**/*.ts',
-            'typings/index.d.ts'
-        ])
+        .src([paths.source + '**/*.ts'])
         .pipe(sourcemap.init())
         .pipe(ts(project));        
         
@@ -51,10 +48,11 @@ gulp.task('compile:typescript', ['clean:typescript'], function () {
 });
 
 gulp.task('compile:tests', ['compile:typescript','clean:tests'], function () {
-    var project = ts.createProject('tsconfig.json');
+    var project = ts.createProject('tsconfig.json', {typescript:typescript});
 
     var tsResult = gulp.src([
-            paths.spec + '**/*spec.ts', 'typings/index.d.ts'
+            paths.spec + '**/*spec.ts',
+            "node_modules/@types/jasmine/index.d.ts"
         ])
         .pipe(sourcemap.init())
         .pipe(ts(project));        
