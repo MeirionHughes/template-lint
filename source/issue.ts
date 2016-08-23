@@ -12,7 +12,7 @@ export class Issue {
   public column: number;
   public severity: IssueSeverity = IssueSeverity.Error;
   public detail: string;
-  public url: string;
+  public path: string;
 
   constructor(opts: {
     message: string,
@@ -22,7 +22,7 @@ export class Issue {
     column?: number,
     severity?: IssueSeverity
     detail?: string,
-    url?: string
+    path?: string
   }) {
     Object.assign(this, opts);
   }
