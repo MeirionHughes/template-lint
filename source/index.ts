@@ -12,7 +12,7 @@ export * from './rules/self-close';
 export * from './rules/structure';
 export * from './rules/obsolete-tag';
 export * from './rules/obsolete-attribute';
-export * from './rules/unique-id';
+export * from './rules/id';
 export * from './rules/attribute-value';
 export * from './rules/conflicting-attributes';
 
@@ -20,10 +20,10 @@ export * from './rules/conflicting-attributes';
 
 import { SelfCloseRule } from './rules/self-close';
 import { StructureRule } from './rules/structure';
-import { UniqueIdRule } from './rules/unique-id';
+import { IdRule } from './rules/id';
 
 export var DefaultRules = [
   new SelfCloseRule(),
   new StructureRule(),
-  new UniqueIdRule()
+  new IdRule()
 ];

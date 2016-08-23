@@ -4,8 +4,16 @@ import { Rule } from '../rule';
 import { Parser } from '../parser';
 import { Issue, IssueSeverity } from '../issue';
 
-export class UniqueIdRule extends Rule {
+export class IdRule extends Rule {
   private ids: string[];
+
+  constructor(
+    public allowEmptyId: boolean = false,
+    public allowDuplicateId: boolean = false,
+    public allowIllegalChars: boolean = false,
+    public ignoreAny: RegExp = null) {
+    super();
+  }
 
   init(parser: Parser) {
 
@@ -19,8 +27,9 @@ export class UniqueIdRule extends Rule {
         return;
 
       var id = idAttr.value;
+      var illegals = id.match(/^[^a-z]+|[^\w:.-]+/) != null;
 
-      if (id === "") {
+      if (!this.allowEmptyId && id === "") {
         let issue = new Issue({
           message: "id cannot be empty",
           severity: IssueSeverity.Warning,
@@ -30,10 +39,12 @@ export class UniqueIdRule extends Rule {
           end: loc.endOffset
         });
         this.reportIssue(issue);
+      }else if (this.ignoreAny != null && id.match(this.ignoreAny) != null) {
+        return;
       }
-      else if (id.match(/^[^a-z]+|[^\w:.-]+/) != null) {
-        let issue = new Issue({
-          message: "id contains illegal characters",
+      else if (!this.allowIllegalChars && illegals){
+         let issue = new Issue({
+          message: `illegal characters detected in id: ${id}`,
           severity: IssueSeverity.Error,
           line: loc.line,
           column: loc.col,
@@ -42,7 +53,7 @@ export class UniqueIdRule extends Rule {
         });
         this.reportIssue(issue);
       }
-      else if (this.ids.indexOf(id) != -1) {
+      else if (!this.allowDuplicateId && this.ids.indexOf(id) != -1) {
         let issue = new Issue({
           message: `duplicated id: ${id}`,
           severity: IssueSeverity.Error,
@@ -53,7 +64,6 @@ export class UniqueIdRule extends Rule {
         });
         this.reportIssue(issue);
       }
-
       this.ids.push(id);
     });
   }
