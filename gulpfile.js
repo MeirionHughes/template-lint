@@ -35,7 +35,7 @@ gulp.task('compile:typescript', ['clean:typescript'], function () {
     var project = ts.createProject('tsconfig.json', {typescript:typescript});
 
     var tsResult = gulp        
-        .src([paths.source + '**/*.ts'])
+        .src([paths.source + '**/*.ts', "./node_modules/@types/**/*.d.ts"])
         .pipe(sourcemap.init())
         .pipe(ts(project));        
         
@@ -51,8 +51,7 @@ gulp.task('compile:tests', ['compile:typescript','clean:tests'], function () {
     var project = ts.createProject('tsconfig.json', {typescript:typescript});
 
     var tsResult = gulp.src([
-            paths.spec + '**/*spec.ts',
-            "node_modules/@types/jasmine/index.d.ts"
+            paths.spec + '**/*spec.ts', "./node_modules/@types/**/*.d.ts"
         ])
         .pipe(sourcemap.init())
         .pipe(ts(project));        

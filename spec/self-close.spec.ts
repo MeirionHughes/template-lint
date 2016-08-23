@@ -71,4 +71,12 @@ describe("SelfClose Rule", () => {
         done();
       });
   });
+
+   it("will allow un-closed void elements", (done) => {
+    linter.lint('<template><br></template>')
+      .then((issues) => {
+        expect(issues.length).toBe(0);
+        done();
+      });
+  });
 });

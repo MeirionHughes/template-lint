@@ -46,4 +46,20 @@ describe("Parser Rule", () => {
         done();
       });
   });
+
+  it("will reject unclosed non-void elements", (done) => {
+    linter.lint('<template><boo></template>')
+      .then((issues) => {
+        expect(issues.length).toBeGreaterThan(0);
+        done();
+      });
+  });
+
+  it("will reject end-tag for void elements", (done) => {
+    linter.lint('<template><img></img></template>')
+      .then((issues) => {
+        expect(issues.length).toBeGreaterThan(0);
+        done();
+      });
+  });
 });
