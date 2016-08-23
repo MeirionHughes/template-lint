@@ -1,13 +1,13 @@
-import {Linter} from '../source/linter';
-import {ObsoleteAttributeRule} from '../source/rules/obsolete-attribute';
+import { Linter } from '../source/linter';
+import { ObsoleteAttributeRule } from '../source/rules/obsolete-attribute';
 
 describe("ObsoleteAttribute Rule", () => {
 
   var linter: Linter = new Linter([
     new ObsoleteAttributeRule([
-      { attr: 'atty', tag: 'my-tag', msg:"use 'foo' instead"},
-      { attr: 'atty2', tag: ''  },
-      { attr: 'atty3'}
+      { attr: 'atty', tag: 'my-tag', msg: "use 'foo' instead" },
+      { attr: 'atty2', tag: '' },
+      { attr: 'atty3' }
     ]),
   ]);
 

@@ -1,27 +1,29 @@
-import {IssueSeverity} from './issue-severity';
-export {IssueSeverity} from './issue-severity';
+import { IssueSeverity } from './issue-severity';
+export { IssueSeverity } from './issue-severity';
 
 /**
 * information about an issue
 */
 export class Issue {
+  public message: string;
+  public start: number;
+  public end: number;
+  public line: number;
+  public column: number;
+  public severity: IssueSeverity = IssueSeverity.Error;
+  public detail: string;
+  public url: string;
 
-    public severity: IssueSeverity = IssueSeverity.Error;
-
-    public line: number;
-    public column: number;
-    public message: string;
-    public detail: string;
-    public url: string;
-
-    constructor(opts: {
-        message: string,
-        line: number,
-        column?: number,
-        severity?: IssueSeverity
-        detail?: string,
-        url?: string
-    }) {
-        Object.assign(this, opts);
-    }
+  constructor(opts: {
+    message: string,
+    start?: number,
+    end?: number,
+    line?: number,
+    column?: number,
+    severity?: IssueSeverity
+    detail?: string,
+    url?: string
+  }) {
+    Object.assign(this, opts);
+  }
 }

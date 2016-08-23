@@ -1,8 +1,8 @@
-import {Linter} from '../source/linter';
-import {SelfCloseRule} from '../source/rules/self-close';
-import {StructureRule} from '../source/rules/structure';
-import {Issue} from '../source/issue';
-import {Readable} from 'stream';
+import { Linter } from '../source/linter';
+import { SelfCloseRule } from '../source/rules/self-close';
+import { StructureRule } from '../source/rules/structure';
+import { Issue } from '../source/issue';
+import { Readable } from 'stream';
 
 describe("Linter", () => {
   it("should not throw error when given a string", () => {
@@ -10,22 +10,22 @@ describe("Linter", () => {
       new SelfCloseRule(),
     ]);
 
-    var html = "<template/>"
+    var html = "<template/>";
 
-    var result: Issue[]
+    var result: Issue[];
 
     expect(() => linter.lint(html).then((x) => result = x)).not.toThrow();
-  });  
-  
+  });
+
   it("should not throw error when given a string and file path", () => {
     var linter: Linter = new Linter([
       new SelfCloseRule(),
     ]);
 
-    var html = "<template/>"
-    var path = "./some/path.html"
+    var html = "<template/>";
+    var path = "./some/path.html";
 
-    var result: Issue[]
+    var result: Issue[];
 
     expect(() => linter.lint(html, path).then((x) => result = x)).not.toThrow();
   });
@@ -50,7 +50,7 @@ describe("Linter", () => {
     catch (err) {
       error = err;
     }
-    
+
     expect(error).toBeUndefined();
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
@@ -58,14 +58,14 @@ describe("Linter", () => {
     done();
   });
 
-   it("should return issues sorted by line", async (done) => {
+  it("should return issues sorted by line", async (done) => {
     var linter: Linter = new Linter([
       new SelfCloseRule(),
       new StructureRule(),
     ]);
 
-    var html = 
-    `<template>
+    var html =
+      `<template>
        <div/>    
     </templte>`;
 

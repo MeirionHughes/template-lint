@@ -1,5 +1,5 @@
-import {Linter} from '../source/linter';
-import {StructureRule} from '../source/rules/structure';
+import { Linter } from '../source/linter';
+import { StructureRule } from '../source/rules/structure';
 
 describe("Parser Rule", () => {
 
@@ -38,7 +38,7 @@ describe("Parser Rule", () => {
         done();
       });
   });
-  
+
   it("will accept unclosed void elements", (done) => {
     linter.lint('<template><img></template>')
       .then((issues) => {

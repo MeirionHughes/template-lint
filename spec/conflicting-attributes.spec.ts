@@ -1,6 +1,6 @@
-import {Linter} from '../source/linter';
-import {Issue} from '../source/issue';
-import {ConflictingAttributesRule, ConflictingAttributes} from '../source/rules/conflicting-attributes';
+import { Linter } from '../source/linter';
+import { Issue } from '../source/issue';
+import { ConflictingAttributesRule, ConflictingAttributes } from '../source/rules/conflicting-attributes';
 
 describe("ConflictingAttributes Rule", () => {
 
@@ -60,7 +60,7 @@ describe("ConflictingAttributes Rule", () => {
 
   it("can NOT be constructed with empty list", (done) => {
     expect(() => {
-      new ConflictingAttributesRule([])
+      new ConflictingAttributesRule([]);
     }).toThrow();
     done();
   });

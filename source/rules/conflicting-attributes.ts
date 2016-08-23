@@ -1,10 +1,10 @@
 "use strict";
 
-import {Rule} from '../rule';
-import {Parser} from '../parser';
-import {Issue, IssueSeverity} from '../issue';
+import { Rule } from '../rule';
+import { Parser } from '../parser';
+import { Issue, IssueSeverity } from '../issue';
 
-import {ASTAttribute, StartTagLocationInfo} from 'parse5';
+import { ASTAttribute, StartTagLocationInfo } from 'parse5';
 
 export class ConflictingAttributes {
   constructor(public attrs: string[], public msg: string) {
@@ -28,7 +28,7 @@ export class ConflictingAttributesRule extends Rule {
 
   init(parser: Parser) {
     if (this.conflictingAttributesList.length === 0)
-        return;
+      return;
     parser.on("startTag", (tag, attrs, selfClosing, loc) => {
       this.conflictingAttributesList.forEach((conflictingAttributes) => {
         this.checkConflictsWith(attrs, loc, conflictingAttributes);
@@ -49,7 +49,9 @@ export class ConflictingAttributesRule extends Rule {
         message: fullErrMsg,
         line: loc.line,
         column: loc.col,
-        detail: conflictingAttributes.msg
+        detail: conflictingAttributes.msg,
+        start: loc.startOffset,
+        end: loc.endOffset
       }));
     }
   }

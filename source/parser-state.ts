@@ -48,7 +48,7 @@ export class ParserState {
 
       if (!selfClosing) {
         let currentScope = this.scope;
-        let nextScope = ""
+        let nextScope = "";
 
         if (stack.length > 0)
           nextScope = stack[stack.length - 1].scope;
@@ -61,27 +61,31 @@ export class ParserState {
       }
     });
 
-    parser.on("endTag", (name, location) => {
+    parser.on("endTag", (name, loc) => {
 
-      if (stack.length > 0 && stack[stack.length - 1].isVoid){
+      if (stack.length > 0 && stack[stack.length - 1].isVoid) {
         this.popStack();
       }
 
       if (this.isVoid(name)) {
         let issue = new Issue({
           message: "void elements should not have a closing tag",
-          line: location.line,
-          column: location.col,
-          severity: IssueSeverity.Error
+          line: loc.line,
+          column: loc.col,
+          severity: IssueSeverity.Error,
+          start: loc.startOffset,
+          end: loc.endOffset
         });
         this.issues.push(issue);
       }
       else if (stack.length <= 0 || stack[stack.length - 1].name != name) {
         let issue = new Issue({
           message: "mismatched close tag",
-          line: location.line,
-          column: location.col,
-          severity: IssueSeverity.Error
+          line: loc.line,
+          column: loc.col,
+          severity: IssueSeverity.Error,
+          start: loc.startOffset,
+          end: loc.endOffset
         });
         this.issues.push(issue);
       }
@@ -100,7 +104,7 @@ export class ParserState {
       self.nextScope = null;
 
       if (self.nextNode != null)
-        self.stack.push(self.nextNode)
+        self.stack.push(self.nextNode);
       self.nextNode = null;
     });
   }
@@ -109,12 +113,15 @@ export class ParserState {
     let stack = this.stack;
 
     if (stack.length > 0) {
-      let element = stack[stack.length - 1]
+      let element = stack[stack.length - 1];
       let issue = new Issue({
         message: "suspected unclosed element detected",
         severity: IssueSeverity.Error,
         line: element.location.line,
         column: element.location.col,
+        start: element.location.startOffset,
+        end: element.location.endOffset
+
       });
       this.issues.push(issue);
     }

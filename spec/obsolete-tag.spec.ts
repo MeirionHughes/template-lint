@@ -1,10 +1,10 @@
-import {Linter} from '../source/linter';
-import {ObsoleteTagRule} from '../source/rules/obsolete-tag';
-    
+import { Linter } from '../source/linter';
+import { ObsoleteTagRule } from '../source/rules/obsolete-tag';
+
 describe("ObsoleteTag Rule", () => {
 
   var linter: Linter = new Linter([
-    new ObsoleteTagRule([{tag:"my-tag"}]),
+    new ObsoleteTagRule([{ tag: "my-tag" }]),
   ]);
 
   it("will reject obsolete element", (done) => {
@@ -15,8 +15,8 @@ describe("ObsoleteTag Rule", () => {
         done();
       });
   });
-  
-   it("will allow non-obsolete element", (done) => {
+
+  it("will allow non-obsolete element", (done) => {
     linter.lint('<my-tag2></my-tag2>')
       .then((issues) => {
         expect(issues.length).toBe(0);

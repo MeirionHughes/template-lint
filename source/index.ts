@@ -18,12 +18,12 @@ export * from './rules/conflicting-attributes';
 
 "use strict";
 
-import {SelfCloseRule} from './rules/self-close'
-import {StructureRule} from './rules/structure'
-import {UniqueIdRule} from './rules/unique-id'
+import { SelfCloseRule } from './rules/self-close';
+import { StructureRule } from './rules/structure';
+import { UniqueIdRule } from './rules/unique-id';
 
 export var DefaultRules = [
-    new SelfCloseRule(),
-    new StructureRule(),
-    new UniqueIdRule()
-]
+  new SelfCloseRule(),
+  new StructureRule(),
+  new UniqueIdRule()
+];
