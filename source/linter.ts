@@ -2,63 +2,48 @@
 
 import { Readable, Stream } from 'stream';
 import { Rule } from './rule';
-import { ParserState } from './parser-state';
+
 import { Parser } from './parser';
+import { ParserState } from './parser-state';
+import { ParserBuilder } from './parser-builder';
 import { Issue } from './issue';
 
 export class Linter {
 
   private rules: Array<Rule>;
-  private scopes: string[];
-  private voids: string[];
+  private parserBuilder: ParserBuilder;
 
-  constructor(rules: Rule[], scopes?: string[], voids?: string[]) {
-    if (!rules)
-      rules = [];
-
-    this.rules = rules;
-    this.scopes = scopes;
-    this.voids = voids;
+  constructor(rules: Rule[], parserBuilder?: ParserBuilder) {
+    this.rules = rules || [];
+    this.parserBuilder = parserBuilder || new ParserBuilder();
   }
 
   lint(html: string | Stream, path?: string): Promise<Issue[]> {
-    var parseState: ParserState = new ParserState(this.scopes, this.voids);
-    var parser: Parser = new Parser(parseState);
-
-    parseState.initPreRules(parser);
-
-    let rules = this.rules;
-
-    rules.forEach((rule) => {
-      rule.init(parser, path);
-    });
-
-    parseState.initPostRules(parser);
-
-    var work: Parser;
+    var parser = this.parserBuilder.build();
+    parser.init(this.rules, path);
 
     if (typeof (html) === 'string') {
       var stream: Readable = new Readable();
       stream.push(html);
       stream.push(null);
-      work = stream.pipe(parser);
+      stream.pipe(parser);
     } else if (this.isStream(html)) {
-      work = html.pipe(parser);
+      html.pipe(parser);
     }
     else {
       throw new Error("html isn't pipeable");
     }
 
     var completed = new Promise<void>(function (resolve, reject) {
-      work.on("end", () => {
-        parseState.finalise();
+      parser.on("end", () => {
+        parser.finalise();
         resolve();
       });
     });
 
     var ruleTasks = [];
 
-    rules.forEach((rule) => {
+    this.rules.forEach((rule) => {
       let task = completed.then(() => {
         return rule.finalise();
       });
@@ -82,5 +67,4 @@ export class Linter {
   private isStream(input): input is Stream {
     return input.pipe && typeof (input.pipe) === "function";
   }
-
 }

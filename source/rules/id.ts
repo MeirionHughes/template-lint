@@ -39,11 +39,11 @@ export class IdRule extends Rule {
           end: loc.endOffset
         });
         this.reportIssue(issue);
-      }else if (this.ignoreAny != null && id.match(this.ignoreAny) != null) {
+      } else if (this.ignoreAny != null && id.match(this.ignoreAny) != null) {
         return;
       }
-      else if (!this.allowIllegalChars && illegals){
-         let issue = new Issue({
+      else if (!this.allowIllegalChars && illegals) {
+        let issue = new Issue({
           message: `illegal characters detected in id: ${id}`,
           severity: IssueSeverity.Error,
           line: loc.line,
