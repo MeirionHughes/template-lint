@@ -3,6 +3,7 @@
 export * from './linter';
 
 export * from './parser';
+export * from './parser-builder';
 export * from './parser-state';
 export * from './parser-node';
 export * from './rule';
@@ -12,7 +13,7 @@ export * from './rules/self-close';
 export * from './rules/structure';
 export * from './rules/obsolete-tag';
 export * from './rules/obsolete-attribute';
-export * from './rules/id';
+export * from './rules/id-attribute';
 export * from './rules/attribute-value';
 export * from './rules/conflicting-attributes';
 
@@ -20,10 +21,10 @@ export * from './rules/conflicting-attributes';
 
 import { SelfCloseRule } from './rules/self-close';
 import { StructureRule } from './rules/structure';
-import { IdRule } from './rules/id';
+import { IdAttributeRule } from './rules/id-attribute';
 
 export var DefaultRules = [
   new SelfCloseRule(),
   new StructureRule(),
-  new IdRule()
+  new IdAttributeRule()
 ];

@@ -4,15 +4,27 @@ import { Rule } from '../rule';
 import { Parser } from '../parser';
 import { Issue, IssueSeverity } from '../issue';
 
-export class IdRule extends Rule {
+export class IdAttributeRule extends Rule {
   private ids: string[];
 
-  constructor(
-    public allowEmptyId: boolean = false,
-    public allowDuplicateId: boolean = false,
-    public allowIllegalChars: boolean = false,
-    public ignoreAny: RegExp = null) {
+  public allowEmptyId: boolean = false;
+  public allowDuplicateId: boolean = false;
+  public allowIllegalChars: boolean = false;
+  public ignoreAny: RegExp = null;
+
+  constructor(opts?: {
+    allowEmptyId: boolean,
+    allowDuplicateId: boolean,
+    allowIllegalChars: boolean,
+    ignoreAny: RegExp
+  }) {
     super();
+    if (opts) {
+      this.allowEmptyId = opts.allowEmptyId || this.allowEmptyId;
+      this.allowDuplicateId = opts.allowDuplicateId || this.allowDuplicateId;
+      this.allowIllegalChars = opts.allowIllegalChars || this.allowIllegalChars;
+      this.ignoreAny = opts.ignoreAny || this.ignoreAny;
+    }
   }
 
   init(parser: Parser) {

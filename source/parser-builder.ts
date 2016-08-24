@@ -7,12 +7,14 @@ export class ParserBuilder {
     'param', 'source', 'track', 'wbr'];
   private scopes: string[] = ['html', 'body', 'template', 'svg', 'math'];
 
-  withVoids(voids: string[]) {
+  withVoids(voids: string[]): ParserBuilder {
     this.voids = voids;
+    return this;
   }
 
-  withScopes(scopes: string[]) {
+  withScopes(scopes: string[]): ParserBuilder {
     this.scopes = scopes;
+    return this;
   }
 
   build(): Parser {

@@ -1,10 +1,10 @@
 import { Linter } from '../source/linter';
-import { IdRule } from '../source/rules/id';
+import { IdAttributeRule } from '../source/rules/id-attribute';
 
 describe("UniqueId Rule", () => {
 
   var linter: Linter = new Linter([
-    new IdRule()
+    new IdAttributeRule()
   ]);
 
   it("will reject an empty id", (done) => {
