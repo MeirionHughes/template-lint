@@ -1,6 +1,7 @@
 "use strict";
 
 export * from './linter';
+export * from './linter-builder';
 
 export * from './parser';
 export * from './parser-builder';
