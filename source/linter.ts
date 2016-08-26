@@ -7,25 +7,23 @@ import { Parser } from './parser';
 import { ParserState } from './parser-state';
 import { ParserBuilder } from './parser-builder';
 import { Issue } from './issue';
-
-import { ASTGenerator } from './ast';
+import { AST } from './ast';
 
 export class Linter {
 
   private rules: Array<Rule>;
   private parserBuilder: ParserBuilder;
-  private astGenerator: ASTGenerator;
+  private ast: AST;
 
-
-  constructor(rules: Rule[], parserBuilder?: ParserBuilder, astGenerator?: ASTGenerator) {
+  constructor(rules: Rule[], parserBuilder?: ParserBuilder, ast?: AST) {
     this.rules = rules || [];
     this.parserBuilder = parserBuilder || new ParserBuilder();
-    this.astGenerator = astGenerator || new ASTGenerator();
+    this.ast = ast || new AST();
   }
 
   lint(html: string | Stream, path?: string): Promise<Issue[]> {
     var parser = this.parserBuilder.build();
-    parser.init(this.rules, path);
+    parser.init(this.rules, this.ast, path);
 
     if (typeof (html) === 'string') {
       var stream: Readable = new Readable();
@@ -50,7 +48,7 @@ export class Linter {
 
     this.rules.forEach((rule) => {
       let task = completed.then(() => {
-        return rule.finalise(this.astGenerator.root);
+        return rule.finalise(this.ast.root);
       });
       ruleTasks.push(task);
     });

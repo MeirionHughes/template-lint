@@ -14,26 +14,25 @@ import { ASTNode } from './ast/ast-node';
 import { Rule } from './rule';
 import { Parser } from './parser';
 
-export class ASTGenerator extends Rule {
+export class AST extends Rule {
   public root: ASTNode = null;
 
   constructor() { super(); }
 
-  init(parser: Parser) {
+  init(parser: Parser, path?:string) {
 
-    var current = new ASTNode();
-    this.root = current;
+    var current = this.root = new ASTNode();
 
     parser.on("startTag", (tag, attrs, selfClosing, loc) => {
       let next = new ASTElementNode();
       next.tag = tag;
       next.parent = current;
-      next.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col };
+      next.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col, path: path };
       next.attrs = attrs.map((x, i) => {
         var attr = new ASTElementAttribute();
-        attr.name = x.name + (x.prefix) ? `:${x.prefix}` : null;
+        attr.name = (x.prefix !== undefined) ? `${x.prefix}:${x.name}` : x.name;
         var attrLoc = loc.attrs[attr.name];
-        attr.location = <ASTLocation>{ start: attrLoc.startOffset, end: attrLoc.endOffset, line: attrLoc.line, column: attrLoc.col };
+        attr.location = <ASTLocation>{ start: attrLoc.startOffset, end: attrLoc.endOffset, line: attrLoc.line, column: attrLoc.col, path: path };
         return attr;
       });
 
@@ -50,7 +49,7 @@ export class ASTGenerator extends Rule {
     parser.on("text", (text, loc) => {
       let child = new ASTTextNode();
       child.parent = current;
-      child.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col };
+      child.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col, path: path };
       current.children.push(child);
     });
   }

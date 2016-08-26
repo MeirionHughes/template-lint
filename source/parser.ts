@@ -3,6 +3,7 @@ import * as parse5 from 'parse5';
 
 import { ParserState } from './parser-state';
 import { Rule } from './rule';
+import { AST } from './ast';
 
 export class Parser extends SAXParser {
   constructor(public state: ParserState) {
@@ -18,8 +19,10 @@ export class Parser extends SAXParser {
     return this.state.isScope(name);
   }
 
-  public init(rules: Rule[], path: string) {
+  public init(rules: Rule[], ast: AST, path: string) {
     this.state.initPreRules(this);
+
+    ast.init(this);
 
     rules.forEach((rule) => {
       rule.init(this, path);
