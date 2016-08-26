@@ -1,0 +1,57 @@
+export * from './ast/ast-context';
+export * from './ast/ast-element-attribute';
+export * from './ast/ast-element-node';
+export * from './ast/ast-location';
+export * from './ast/ast-node';
+export * from './ast/ast-text-node';
+
+import { ASTElementAttribute } from './ast/ast-element-attribute';
+import { ASTElementNode } from './ast/ast-element-node';
+import { ASTTextNode } from './ast/ast-text-node';
+import { ASTLocation } from './ast/ast-location';
+import { ASTNode } from './ast/ast-node';
+
+import { Rule } from './rule';
+import { Parser } from './parser';
+
+export class ASTGenerator extends Rule {
+  public root: ASTNode = null;
+
+  constructor() { super(); }
+
+  init(parser: Parser) {
+
+    var current = new ASTNode();
+    this.root = current;
+
+    parser.on("startTag", (tag, attrs, selfClosing, loc) => {
+      let next = new ASTElementNode();
+      next.tag = tag;
+      next.parent = current;
+      next.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col };
+      next.attrs = attrs.map((x, i) => {
+        var attr = new ASTElementAttribute();
+        attr.name = x.name + (x.prefix) ? `:${x.prefix}` : null;
+        var attrLoc = loc.attrs[attr.name];
+        attr.location = <ASTLocation>{ start: attrLoc.startOffset, end: attrLoc.endOffset, line: attrLoc.line, column: attrLoc.col };
+        return attr;
+      });
+
+      current.children.push(next);
+
+      if (!parser.isVoid(tag))
+        current = next;
+    });
+
+    parser.on("endTag", (tag, attrs, selfClosing, loc) => {
+      current = current.parent;
+    });
+
+    parser.on("text", (text, loc) => {
+      let child = new ASTTextNode();
+      child.parent = current;
+      child.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col };
+      current.children.push(child);
+    });
+  }
+}

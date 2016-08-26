@@ -1,5 +1,6 @@
 import { Parser } from './parser';
 import { Issue } from './issue';
+import { ASTNode } from './ast';
 
 /**
 * Abstract Lint Rule 
@@ -18,10 +19,10 @@ export abstract class Rule {
 
 
   /**
-  * Called by the parser to gather any reported issues
-  * (if you override this, ensure you `return super.finalise()`)
+  * Called when parsing is complete. 
+  * If you override finalise(), ensure you `return super.finalise()`)
   */
-  public finalise(): Issue[] {
+  public finalise(root?: ASTNode): Issue[] {
     let issues = this.issues;
     this.issues = [];
     return issues;
