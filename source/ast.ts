@@ -30,9 +30,16 @@ export class AST extends Rule {
       next.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col, path: path };
       next.attrs = attrs.map((x, i) => {
         var attr = new ASTElementAttribute();
-        attr.name = (x.prefix !== undefined) ? `${x.prefix}:${x.name}` : x.name;
-        var attrLoc = loc.attrs[attr.name];
+
+        attr.name = (x.prefix !== undefined && x.prefix != "") ? `${x.prefix}:${x.name}` : x.name;
+        
+        var attrLoc = loc.attrs[attr.name] || loc.attrs[attr.name.toLowerCase()];
+
+        if (attrLoc == undefined)
+          attrLoc = { startOffset: -1, endOffset: -1, line: -1, col: -1 };
+
         attr.location = <ASTLocation>{ start: attrLoc.startOffset, end: attrLoc.endOffset, line: attrLoc.line, column: attrLoc.col, path: path };
+
         return attr;
       });
 
