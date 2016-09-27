@@ -19,7 +19,7 @@ export class AST extends Rule {
 
   constructor() { super(); }
 
-  init(parser: Parser, path?:string) {
+  init(parser: Parser, path?: string) {
 
     var current = this.root = new ASTNode();
 
