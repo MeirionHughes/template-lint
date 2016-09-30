@@ -19,6 +19,7 @@ export * from './rules/obsolete-attribute';
 export * from './rules/id-attribute';
 export * from './rules/attribute-value';
 export * from './rules/conflicting-attributes';
+export * from './rules/valid-child';
 
 "use strict";
 
