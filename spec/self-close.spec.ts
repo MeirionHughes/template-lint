@@ -8,7 +8,7 @@ describe("SelfClose Rule", () => {
   ]);
 
   it("will allow self-close within svg scope", (done) => {
-    linter.lint('<template><svg><rect/></svg></template>')
+    linter.lint('<template><svg><rect/><circle/><line/><text></text><line/></svg></template>')
       .then((issues) => {
         expect(issues.length).toBe(0);
         done();

@@ -57,7 +57,7 @@ export class ParserState {
           nextScope = name;
 
         this.nextScope = nextScope;
-        this.nextNode = new ParserNode(currentScope, name, attrs, isVoid, location);
+        this.nextNode = new ParserNode(this.nextScope, name, attrs, isVoid, location);
       }
     });
 
