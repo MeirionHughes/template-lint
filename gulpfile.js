@@ -73,7 +73,7 @@ gulp.task('compile:tests', ['compile:typescript', 'clean:tests'], function () {
         return relativeSource;
       }
     }))
-    .pipe(replace(/(require\('\..\/source\/)/g, 'require(\'..\/dist\/'))
+    .pipe(replace(/..\/source\//g, '..\/dist\/'))
     .pipe(gulp.dest(paths.spec));
 });
 

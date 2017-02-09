@@ -20,10 +20,11 @@ export class AST extends Rule {
   constructor() { super(); }
 
   init(parser: Parser, path?: string) {
-
     var current = this.root = new ASTNode();
-
     parser.on("startTag", (tag, attrs, selfClosing, loc) => {
+      if (current == undefined)
+        return;
+
       let next = new ASTElementNode();
       next.tag = tag;
       next.parent = current;
@@ -32,7 +33,7 @@ export class AST extends Rule {
         var attr = new ASTElementAttribute();
 
         attr.name = (x.prefix !== undefined && x.prefix != "") ? `${x.prefix}:${x.name}` : x.name;
-        
+
         var attrLoc = loc.attrs[attr.name] || loc.attrs[attr.name.toLowerCase()];
 
         if (attrLoc == undefined)
@@ -50,10 +51,15 @@ export class AST extends Rule {
     });
 
     parser.on("endTag", (tag, attrs, selfClosing, loc) => {
+      if (current == undefined)
+        return;
       current = current.parent;
     });
 
     parser.on("text", (text, loc) => {
+      if (current == undefined)
+        return;
+
       let child = new ASTTextNode();
       child.parent = current;
       child.location = <ASTLocation>{ start: loc.startOffset, end: loc.endOffset, line: loc.line, column: loc.col, path: path };

@@ -62,4 +62,14 @@ describe("Parser Rule", () => {
         done();
       });
   });
+
+  it("will reject to many closing elements", (done) => {
+    linter.lint('<template></div></div></div></div></div></div></div></template>')
+      .then((issues) => {
+        expect(issues.length).toBe(6);
+        expect(issues[5].message).toBe("too many mismatched close tags");
+        console.log(issues);
+        done();
+      });
+  });
 });

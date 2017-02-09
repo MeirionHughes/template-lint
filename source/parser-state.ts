@@ -17,6 +17,8 @@ export class ParserState {
   public nextScope: string;
   public nextNode: ParserNode;
 
+  public mismatchCount = 0;
+
   constructor(scopes?: string[], voids?: string[]) {
     if (scopes == null)
       scopes = ['html', 'body', 'template', 'svg', 'math'];
@@ -35,6 +37,7 @@ export class ParserState {
     this.issues = [];
 
     var stack = this.stack;
+    this.mismatchCount = 0;
 
     parser.on("startTag", (name, attrs, selfClosing, location) => {
       this.nextScope = null;
@@ -79,15 +82,30 @@ export class ParserState {
         this.issues.push(issue);
       }
       else if (stack.length <= 0 || stack[stack.length - 1].name != name) {
-        let issue = new Issue({
-          message: "mismatched close tag",
-          line: loc.line,
-          column: loc.col,
-          severity: IssueSeverity.Error,
-          start: loc.startOffset,
-          end: loc.endOffset
-        });
-        this.issues.push(issue);
+        if (this.mismatchCount < 5) {
+          let issue = new Issue({
+            message: "mismatched close tag",
+            line: loc.line,
+            column: loc.col,
+            severity: IssueSeverity.Error,
+            start: loc.startOffset,
+            end: loc.endOffset
+          });
+          this.issues.push(issue);
+        }
+        else if (this.mismatchCount == 5) {
+          let issue = new Issue({
+            message: "too many mismatched close tags",
+            line: loc.line,
+            column: loc.col,
+            severity: IssueSeverity.Fatal,
+            start: loc.startOffset,
+            end: loc.endOffset
+          });
+          this.issues.push(issue);
+        }
+
+        this.mismatchCount += 1;
       }
       else {
         this.popStack();
